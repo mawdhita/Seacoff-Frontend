@@ -29,10 +29,13 @@ const Menu = () => {
 
   const categories = ['All', 'Minuman', 'Makanan'];
 
-  const getImage = (fotoMenu) => {
-    if (!fotoMenu) return `${BASE_URL}/uploads/placeholder.png`;
-    return `${BASE_URL}/uploads/${fotoMenu}`;
-  };
+  const getImage = (fotoMenuUrl) => {
+  if (!fotoMenuUrl) {
+    return 'https://seacoff-backend.vercel.app/uploads/placeholder.png';
+  }
+  return fotoMenuUrl;
+};
+
 
   return (
     <div className="menu-container">
