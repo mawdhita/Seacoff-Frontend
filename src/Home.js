@@ -132,38 +132,29 @@ const Home = () => {
         ))}
       </div>
 
-{/* Coffee Cards */}
-<div className="coffee-section">
-  {filteredCoffees.length > 0 ? (
-    filteredCoffees.map((coffee, idx) => (
-      <div key={idx} className="coffee-card">
-        <img
-          src={coffee.foto_menu}
-          alt={coffee.nama_menu}
-          style={{
-            width: '100%',
-            height: '150px',
-            objectFit: 'cover',
-            borderRadius: '10px',
-          }}
-        />
-        <h3 style={{ margin: '8px 0 4px', color: '#5d3c14' }}>
-          {coffee.nama_menu}
-        </h3>
-        <p style={{ fontSize: '0.9rem', color: '#777', margin: 0 }}>
-          {coffee.deskripsi}
-        </p>
-        <p style={{ fontWeight: '600', marginTop: '6px', color: '#3a2f10' }}>
-          Rp {coffee.harga}
-        </p>
+      {/* Coffee Cards */}
+      <div className="coffee-section">
+        <h2>Popular Coffee</h2>
+        <div className="coffee-list">
+          {filteredCoffees.length > 0 ? (
+            filteredCoffees.map((coffee, idx) => (
+              <div key={idx} className="coffee-card">
+                <img
+                  src={coffee.foto_menu}
+                  alt={coffee.nama_menu}
+                />
+                <h3>{coffee.nama_menu}</h3>
+                <p>Rp {coffee.harga}</p>
+                <button className="order-button" onClick={() => navigate(`/detail/${coffee.id_menu}`)}>
+                  + Pesan
+                </button>
+              </div>
+            ))
+          ) : (
+            <p>Tidak ada menu yang sesuai.</p>
+          )}
+        </div>
       </div>
-    ))
-  ) : (
-    <p style={{ textAlign: 'center', marginTop: '20px', color: '#777' }}>
-      Menu kopi tidak ditemukan.
-    </p>
-  )}
-</div>
 
       {/* Bottom Navbar (Footer) */}
       <div className="bottom-nav">
