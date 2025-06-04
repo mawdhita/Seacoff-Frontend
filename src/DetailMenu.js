@@ -34,11 +34,10 @@ const DetailMenu = () => {
   const handleAddToCart = () => {
     const sessionId = localStorage.getItem('session_id');
 
-    axios.post(
-      `${BASE_URL}/api/cart`,    // <-- Ganti localhost jadi BASE_URL
-      { id_menu: menu.id_menu, quantity },
-      { headers: { 'x-session-id': sessionId } }
-    )
+    axios.post(`${BASE_URL}/api/cart`, { id_menu: menu.id_menu, quantity }, {
+  headers: { 'x-session-id': sessionId }
+})
+
     .then(res => {
       console.log('Berhasil tambah ke keranjang:', res.data);
       setShowModal(true);
