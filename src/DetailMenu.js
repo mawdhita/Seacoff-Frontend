@@ -31,13 +31,11 @@ const DetailMenu = () => {
   const handleIncrease = () => setQuantity(prev => prev + 1);
   const handleDecrease = () => setQuantity(prev => (prev > 1 ? prev - 1 : 1));
 
-  const handleAddToCart = () => {
-    const sessionId = localStorage.getItem('session_id');
-
-    axios.post(`${BASE_URL}/api/cart`, { id_menu: menu.id_menu, quantity }, {
-  headers: { 'x-session-id': sessionId }
-})
-
+const handleAddToCart = () => {
+  axios.post(`${BASE_URL}/api/cart`, {
+      id_menu: menu.id_menu,
+      quantity
+    })
     .then(res => {
       console.log('Berhasil tambah ke keranjang:', res.data);
       setShowModal(true);
@@ -46,7 +44,7 @@ const DetailMenu = () => {
     .catch(err => {
       console.error('Gagal tambah ke keranjang:', err.response ? err.response.data : err.message);
     });
-  };
+};
 
   const handleCheckout = () => {
     navigate('/checkout', { state: { menu, quantity } });
