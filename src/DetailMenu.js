@@ -10,7 +10,7 @@ const DetailMenu = () => {
   const [menu, setMenu] = useState(null);
   const [quantity, setQuantity] = useState(1);
   const [showModal, setShowModal] = useState(false);
-  const BASE_URL = 'https://seacoff-backend-fggd34927-mawdhitas-projects.vercel.app/';  // <-- BASE_URL
+  const BASE_URL = 'https://seacoff-backend.vercel.app';  // <-- BASE_URL
 
   useEffect(() => {
     const storedSessionId = localStorage.getItem('session_id');
@@ -23,7 +23,7 @@ const DetailMenu = () => {
   }, []);
 
   useEffect(() => {
-    axios.get(`${BASE_URL}/menus/${id}`)
+    axios.get(`${BASE_URL}/DetailMenu/${id}`)
       .then((res) => setMenu(res.data))
       .catch((err) => console.error('Gagal fetch detail menu:', err));
   }, [id]);
