@@ -8,7 +8,7 @@ const Menu = () => {
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [searchTerm, setSearchTerm] = useState('');
   const navigate = useNavigate();
-  const BASE_URL = 'https://seacoff-production.up.railway.app';
+  const BASE_URL = 'https://seacoff-backend.vercel.app/';
 
   useEffect(() => {
     axios.get(`${BASE_URL}/api/menu`)
