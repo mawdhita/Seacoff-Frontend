@@ -140,12 +140,12 @@ const Home = () => {
             filteredCoffees.map((coffee, idx) => (
               <div key={idx} className="coffee-card">
                 <img
-                  src={coffee.foto_menu}
-                  alt={coffee.nama_menu}
+                  src={foto_menu}
+                  alt={nama_menu}
                 />
                 <h3>{coffee.nama_menu}</h3>
                 <p>Rp {coffee.harga}</p>
-                <button className="order-button" onClick={() => navigate(`./DetailMenu`)}>
+                <button className="order-button" onClick={() => navigate(`/detail/${id_menu}`)}>
                   + Pesan
                 </button>
               </div>
