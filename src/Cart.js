@@ -3,14 +3,15 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import './App.css';
 
+const BASE_URL = 'https://seacoff-backend.vercel.app';  // Fix typo di sini
+
 const Cart = () => {
   const [cartItems, setCartItems] = useState([]);
   const [totalPrice, setTotalPrice] = useState(0);
   const navigate = useNavigate();
-  const BASE_URL = 'hhttps://seacoff-backend.vercel.app/orders';  // <-- BASE_URL yang lo pake
 
   const fetchCart = () => {
-    axios.get(`${BASE_URL}/api/cart`)
+    axios.get(`${BASE_URL}/cart`)
       .then(res => {
         setCartItems(res.data);
         calculateTotal(res.data);
@@ -19,7 +20,11 @@ const Cart = () => {
   };
 
   useEffect(() => {
-    axios.defaults.headers.common['x-session-id'] = localStorage.getItem('session_id');
+    // Pastikan session_id sudah ada sebelum set header
+    const sessionId = localStorage.getItem('session_id');
+    if (sessionId) {
+      axios.defaults.headers.common['x-session-id'] = sessionId;
+    }
     fetchCart();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -31,7 +36,7 @@ const Cart = () => {
 
   const handleIncrease = (id_cart, currentQty) => {
     const newQty = currentQty + 1;
-    axios.put(`${BASE_URL}/api/cart/${id_cart}`, { quantity: newQty })  // <- ganti localhost jadi BASE_URL
+    axios.put(`${BASE_URL}/cart/${id_cart}`, { quantity: newQty })
       .then(() => fetchCart())
       .catch(err => console.error('Gagal update quantity:', err));
   };
@@ -39,13 +44,13 @@ const Cart = () => {
   const handleDecrease = (id_cart, currentQty) => {
     if (currentQty <= 1) return;
     const newQty = currentQty - 1;
-    axios.put(`${BASE_URL}/api/cart/${id_cart}`, { quantity: newQty })  // <- ganti localhost jadi BASE_URL
+    axios.put(`${BASE_URL}/cart/${id_cart}`, { quantity: newQty })
       .then(() => fetchCart())
       .catch(err => console.error('Gagal update quantity:', err));
   };
 
   const handleRemove = (id_cart) => {
-    axios.delete(`${BASE_URL}/api/cart/${id_cart}`)  // <- ganti localhost jadi BASE_URL
+    axios.delete(`${BASE_URL}/cart/${id_cart}`)
       .then(() => fetchCart())
       .catch(err => console.error('Gagal hapus item:', err));
   };
@@ -65,36 +70,59 @@ const Cart = () => {
 
   return (
     <div className="cart-container">
-      <button className="back-icon" onClick={() => navigate(-1)} style={{ border: 'none', background: 'none', fontSize: '1.5rem', cursor: 'pointer' }}>
+      <button
+        className="back-icon"
+        onClick={() => navigate(-1)}
+        style={{
+          border: 'none',
+          background: 'none',
+          fontSize: '1.5rem',
+          cursor: 'pointer'
+        }}
+        aria-label="Kembali"
+      >
         ←
       </button>
 
       <h2>Keranjang Belanja</h2>
+
       <ul className="cart-items">
         {cartItems.map(item => (
           <li key={item.id_cart} className="cart-item">
             <img
-              src={`${BASE_URL}/uploads/${item.foto_menu}`}  // <- ganti localhost jadi BASE_URL
+              src={item.foto_menu ? item.foto_menu : '/placeholder.png'} // jika foto_menu kosong, tampilkan placeholder
               alt={item.nama_menu}
               className="cart-item-img"
             />
             <div className="cart-item-info">
               <h3>{item.nama_menu}</h3>
               <div className="quantity-control">
-                <button onClick={() => handleDecrease(item.id_cart, item.quantity)}>-</button>
+                <button onClick={() => handleDecrease(item.id_cart, item.quantity)} aria-label={`Kurangi jumlah ${item.nama_menu}`}>
+                  -
+                </button>
                 <span>{item.quantity}</span>
-                <button onClick={() => handleIncrease(item.id_cart, item.quantity)}>+</button>
+                <button onClick={() => handleIncrease(item.id_cart, item.quantity)} aria-label={`Tambah jumlah ${item.nama_menu}`}>
+                  +
+                </button>
               </div>
               <p>Harga: Rp {item.harga.toLocaleString()}</p>
               <p>Total: Rp {(item.quantity * item.harga).toLocaleString()}</p>
-              <button className="remove-button" onClick={() => handleRemove(item.id_cart)}>Hapus</button>
+              <button
+                className="remove-button"
+                onClick={() => handleRemove(item.id_cart)}
+                aria-label={`Hapus ${item.nama_menu} dari keranjang`}
+              >
+                Hapus
+              </button>
             </div>
           </li>
         ))}
       </ul>
+
       <div className="cart-total">
         <h3>Total Harga: Rp {totalPrice.toLocaleString()}</h3>
       </div>
+
       <button className="checkout-button" onClick={handleCheckout}>
         Checkout
       </button>
