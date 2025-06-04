@@ -145,7 +145,7 @@ const Home = () => {
                 />
                 <h3>{coffee.nama_menu}</h3>
                 <p>Rp {coffee.harga}</p>
-                <button className="order-button" onClick={() => navigate(`${BASE_URL}/DetailMenu/${coffee.id_menu}`)}>
+                <button className="order-button" onClick={() => navigate(`DetailMenu/${coffee.id_menu}`)}>
                   + Pesan
                 </button>
               </div>
