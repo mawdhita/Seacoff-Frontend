@@ -88,7 +88,7 @@ const Menu = () => {
               <p>Rp {menu.harga ? menu.harga.toLocaleString() : '-'}</p>
               <button
                 className="order-button"
-                onClick={() => navigate(`/menus/${menu.id_menu}`)}
+                onClick={() => navigate(`/DetailMenu/${menu.id_menu}`)}
               >
                 + Pesan
               </button>
