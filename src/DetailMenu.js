@@ -83,9 +83,7 @@ const handleAddToCart = () => {
             <span>{quantity}</span>
             <button onClick={handleIncrease}>+</button>
           </div>
-          <div>
           <button className="add-to-cart-button" onClick={handleAddToCart}>Tambah ke Keranjang</button>
-          </div>
           <button className="checkout-button" onClick={handleCheckout}>Checkout</button>
         </div>
       </div>
