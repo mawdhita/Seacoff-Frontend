@@ -7,7 +7,7 @@ const Cart = () => {
   const [cartItems, setCartItems] = useState([]);
   const [totalPrice, setTotalPrice] = useState(0);
   const navigate = useNavigate();
-  const BASE_URL = 'https://seacoff-production.up.railway.app';  // <-- BASE_URL yang lo pake
+  const BASE_URL = 'hhttps://seacoff-backend.vercel.app/orders';  // <-- BASE_URL yang lo pake
 
   const fetchCart = () => {
     axios.get(`${BASE_URL}/api/cart`)
