@@ -1,103 +1,108 @@
 import React, { useEffect, useState } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { HiArrowLeft } from 'react-icons/hi';
 import './App.css';
 
-const BASE_URL = 'https://seacoff-backend.vercel.app';
-
-const Menu = () => {
-  const [menus, setMenus] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState('All');
-  const [searchTerm, setSearchTerm] = useState('');
+const DetailMenu = () => {
+  const { id } = useParams();
   const navigate = useNavigate();
+  const [menu, setMenu] = useState(null);
+  const [quantity, setQuantity] = useState(1);
+  const [showModal, setShowModal] = useState(false);
+  const BASE_URL = 'https://seacoff-backend-fggd34927-mawdhitas-projects.vercel.app/';  // <-- BASE_URL
 
   useEffect(() => {
-    axios.get(`${BASE_URL}/menus`)
-      .then((res) => {
-        setMenus(res.data);
-        console.log('Data menus:', res.data);
-      })
-      .catch((err) => console.error('Gagal fetch menu:', err));
+    const storedSessionId = localStorage.getItem('session_id');
+    if (!storedSessionId) {
+      const newSessionId = `sess-${Math.random().toString(36).substring(2, 15)}`;
+      localStorage.setItem('session_id', newSessionId);
+    }
+
+    axios.defaults.headers.common['x-session-id'] = localStorage.getItem('session_id');
   }, []);
 
-  const categories = ['All', 'Minuman', 'Makanan'];
+  useEffect(() => {
+    axios.get(`${BASE_URL}/menus/${id}`)
+      .then((res) => setMenu(res.data))
+      .catch((err) => console.error('Gagal fetch detail menu:', err));
+  }, [id]);
 
-  // Filter menu berdasarkan kategori dan pencarian nama
-  const filteredMenus = menus.filter(menu => {
-    const kategori = menu.kategori || '';
-    const nama = menu.nama_menu || '';
+  const handleIncrease = () => setQuantity(prev => prev + 1);
+  const handleDecrease = () => setQuantity(prev => (prev > 1 ? prev - 1 : 1));
 
-    const matchKategori = selectedCategory === 'All' || kategori.toLowerCase() === selectedCategory.toLowerCase();
-    const matchSearch = nama.toLowerCase().includes(searchTerm.toLowerCase());
+  const handleAddToCart = () => {
+    const sessionId = localStorage.getItem('session_id');
 
-    return matchKategori && matchSearch;
-  });
+    axios.post(
+      `${BASE_URL}/api/cart`,    // <-- Ganti localhost jadi BASE_URL
+      { id_menu: menu.id_menu, quantity },
+      { headers: { 'x-session-id': sessionId } }
+    )
+    .then(res => {
+      console.log('Berhasil tambah ke keranjang:', res.data);
+      setShowModal(true);
+      setTimeout(() => setShowModal(false), 2000);
+    })
+    .catch(err => {
+      console.error('Gagal tambah ke keranjang:', err.response ? err.response.data : err.message);
+    });
+  };
 
-  // Fungsi dapatkan gambar: pakai URL penuh dari database, jika kosong pakai placeholder
-  const getImage = (fotoMenuUrl) => {
-    if (!fotoMenuUrl || fotoMenuUrl.trim() === '') {
-      // placeholder image bebas pakai URL online
-      return 'https://via.placeholder.com/300x200?text=No+Image';
-    }
-    return fotoMenuUrl;
+  const handleCheckout = () => {
+    navigate('/checkout', { state: { menu, quantity } });
+  };
+
+  if (!menu) return <div>Loading...</div>;
+
+  const getImage = (fotoMenu) => {
+    if (!fotoMenu) return `${BASE_URL}/uploads/placeholder.png`;  // <-- Ganti localhost jadi BASE_URL
+    return `${BASE_URL}/uploads/${fotoMenu}`;                     // <-- Ganti localhost jadi BASE_URL
   };
 
   return (
-    <div className="menu-container">
-      <div className="menu-header">
-        <h2>Menu</h2>
-        <div className="search-wrapper">
-          <input
-            type="text"
-            placeholder="Cari menu..."
-            className="search-input"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-          {/* Button search hanya sebagai icon, pencarian realtime di input */}
-          <button className="search-button" aria-label="search">
-            🔍
-          </button>
+    <div className="detail-container">
+      <button
+        onClick={() => navigate(-1)}
+        className="back-button"
+      >
+        <HiArrowLeft size={24} />
+      </button>
+
+      <div className="detail-image-wrapper">
+        <img src={getImage(menu.foto_menu)} alt={menu.nama_menu} className="detail-image" />
+      </div>
+
+      <div className="detail-info">
+        <h2 className="detail-title">{menu.nama_menu}</h2>
+        <p className="detail-category">{menu.kategori}</p>
+        <p className="detail-price">Rp {menu.harga.toLocaleString()}</p>
+
+        <p className="detail-description">{menu.deskripsi}</p>
+
+        <div className="detail-action">
+          <div className="quantity-control">
+            <button onClick={handleDecrease}>-</button>
+            <span>{quantity}</span>
+            <button onClick={handleIncrease}>+</button>
+          </div>
+          <button className="add-to-cart-button" onClick={handleAddToCart}>Tambah ke Keranjang</button>
+          <button className="checkout-button" onClick={handleCheckout}>Checkout</button>
         </div>
       </div>
 
-      <div className="category-filter">
-        {categories.map((cat) => (
-          <button
-            key={cat}
-            className={`category-button ${selectedCategory === cat ? 'active' : ''}`}
-            onClick={() => setSelectedCategory(cat)}
-          >
-            {cat}
-          </button>
-        ))}
-      </div>
-
-      <div className="menu-list">
-        {filteredMenus.length === 0 ? (
-          <p style={{ textAlign: 'center', marginTop: '20px' }}>Tidak ada menu yang ditemukan.</p>
-        ) : (
-          filteredMenus.map(menu => (
-            <div className="menu-card" key={menu.id_menu}>
-              <img
-                src={getImage(menu.foto_menu)}
-                alt={menu.nama_menu}
-                style={{ width: '100%', height: '150px', objectFit: 'cover', borderRadius: '8px' }}
-              />
-              <h3>{menu.nama_menu}</h3>
-              <p>Rp {menu.harga ? menu.harga.toLocaleString() : '-'}</p>
-              <button
-                className="order-button"
-                onClick={() => navigate(`/detail/${menu.id_menu}`)}
-              >
-                + Pesan
-              </button>
-            </div>
-          ))
-        )}
-      </div>
+      {showModal && (
+        <div className="modal-overlay">
+          <div className="modal">
+            <img src="/assets/success-icon.png" alt="Success" className="modal-icon" />
+            <h2>Congratulations!</h2>
+            <p>Sip, berhasil ditambahkan ke keranjangmu!</p>
+            <div className="loader"></div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
 
-export default Menu;
+export default DetailMenu;
