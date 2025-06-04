@@ -8,10 +8,10 @@ const Menu = () => {
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [searchTerm, setSearchTerm] = useState('');
   const navigate = useNavigate();
-  const BASE_URL = 'https://seacoff-backend.vercel.app/menus';
+  const BASE_URL = 'https://seacoff-backend.vercel.app';
 
   useEffect(() => {
-    axios.get(`${BASE_URL}/api/menu`)
+    axios.get(`${BASE_URL}/menus`)
       .then((res) => {
         setMenus(res.data);
         console.log('Data menus:', res.data);

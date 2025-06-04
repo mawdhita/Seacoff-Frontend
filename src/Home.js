@@ -4,7 +4,7 @@ import { FiHome, FiShoppingCart, FiMenu, FiSearch, FiUser } from 'react-icons/fi
 import axios from 'axios';
 import './App.css';
 
-const BASE_URL = 'https://seacoff-production.up.railway.app';
+const BASE_URL = 'https://seacoff-backend.vercel.app';
 
 const Home = () => {
   const navigate = useNavigate();
@@ -20,7 +20,7 @@ const Home = () => {
 
   const fetchMenu = async () => {
     try {
-      const response = await axios.get(`${BASE_URL}/api/menu`);
+      const response = await axios.get(`${BASE_URL}/menus`);
       const menuData = response.data;
 
       setCoffees(menuData);

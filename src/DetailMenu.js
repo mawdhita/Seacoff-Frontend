@@ -23,7 +23,7 @@ const DetailMenu = () => {
   }, []);
 
   useEffect(() => {
-    axios.get(`${BASE_URL}/api/menu/${id}`)
+    axios.get(`${BASE_URL}/menus/${id}`)
       .then((res) => setMenu(res.data))
       .catch((err) => console.error('Gagal fetch detail menu:', err));
   }, [id]);
@@ -35,7 +35,7 @@ const DetailMenu = () => {
     const sessionId = localStorage.getItem('session_id');
 
     axios.post(
-      `${BASE_URL}/api/cart`,    // <-- Ganti localhost jadi BASE_URL
+      `${BASE_URL}/cart`,    // <-- Ganti localhost jadi BASE_URL
       { id_menu: menu.id_menu, quantity },
       { headers: { 'x-session-id': sessionId } }
     )
