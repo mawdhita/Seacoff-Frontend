@@ -89,7 +89,10 @@ const handleAddToCart = () => {
       {showModal && (
         <div className="modal-overlay">
           <div className="modal">
-            <img src="/asset/check.png" alt="Success" className="modal-icon" />
+           <img 
+                  src={`https://raw.githubusercontent.com/mawdhita/Seacoff-Backend/main/uploads/check.png`} 
+                  className='modal-icon'
+                />
             <h2>Congratulations!</h2>
             <p>Sip, berhasil ditambahkan ke keranjangmu!</p>
             <div className="loader"></div>
