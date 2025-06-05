@@ -139,10 +139,11 @@ const Home = () => {
           {filteredCoffees.length > 0 ? (
             filteredCoffees.map((coffee, idx) => (
               <div key={idx} className="coffee-card">
-                <img
-                  src={coffee.foto_menu}
-                  alt={coffee.nama_menu}
-                />
+               <img 
+  src={`https://raw.githubusercontent.com/mawdhita/Seacoff-Backend/main/uploads/${coffee.foto_menu}`} 
+  alt={coffee.nama_menu} 
+/>
+
                 <h3>{coffee.nama_menu}</h3>
                 <p>Rp {coffee.harga}</p>
                 <button className="order-button" onClick={() => navigate(`/detail/${coffee.id_menu}`)}>
