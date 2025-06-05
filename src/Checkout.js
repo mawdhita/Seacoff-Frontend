@@ -63,18 +63,22 @@ const Checkout = () => {
       const res = await axios.post(`${BASE_URL}/Api/orders`, data);
       console.log("✅ Respon dari backend:", res.data);
 
-      navigate('/nota', {
-        state: {
-          items,
-          total,
-          customerName,
-          breakdown: {
-            subtotal,
-            ppn,
-            service,
-          }
-        }
-      });
+navigate('/nota', {
+  state: {
+    items: items.map(item => ({
+      nama_menu: item.nama_menu,
+      quantity: item.quantity,
+      harga: item.harga
+    })),
+    total,
+    customerName,
+    breakdown: {
+      subtotal,
+      ppn,
+      service,
+    }
+  }
+});
     } catch (err) {
       console.error("❌ Gagal checkout:", err);
       alert("Gagal melakukan checkout.");
