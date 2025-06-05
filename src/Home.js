@@ -31,7 +31,7 @@ const Home = () => {
     }
   };
 
-const filteredCoffees = coffees.filter(coffee => {
+  const filteredCoffees = coffees.filter(coffee => {
     const matchCategory = selectedCategory === 'All' || coffee.kategori === selectedCategory;
     const matchSearch = coffee.nama_menu.toLowerCase().includes(searchTerm.toLowerCase());
     return matchCategory && matchSearch;
@@ -140,7 +140,7 @@ const filteredCoffees = coffees.filter(coffee => {
             filteredCoffees.map((coffee, idx) => (
               <div key={idx} className="coffee-card">
                 <img
-                  src={`${BASE_URL}/uploads/${coffee.foto_menu}`}
+                  src={coffee.foto_menu}
                   alt={coffee.nama_menu}
                 />
                 <h3>{coffee.nama_menu}</h3>
