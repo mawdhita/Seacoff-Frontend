@@ -46,9 +46,19 @@ const handleAddToCart = () => {
     });
 };
 
-  const handleCheckout = () => {
-    navigate('/checkout', { state: { menu, quantity } });
+const handleCheckout = () => {
+  const item = {
+    id_menu: menu.id_menu,
+    nama_menu: menu.nama_menu,
+    harga: menu.harga,
+    quantity,
+    kategori: menu.kategori,
+    foto_menu: menu.foto_menu
   };
+  const totalPrice = menu.harga * quantity;
+
+  navigate('/checkout', { state: { items: [item], totalPrice } });
+};
 
   if (!menu) return <div>Loading...</div>;
 
