@@ -3,82 +3,91 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import './App.css';
 
-const BASE_URL = 'https://seacoff-backend.vercel.app';  // Fix typo di sini
+const BASE_URL = 'https://seacoff-backend.vercel.app/api'; // Tambahkan /api sesuai backend
 
 const Cart = () => {
   const [cartItems, setCartItems] = useState([]);
   const [totalPrice, setTotalPrice] = useState(0);
   const navigate = useNavigate();
 
-  const fetchCart = () => {
-    axios.get(`${BASE_URL}/cart`)
-      .then(res => {
-        setCartItems(res.data);
-        calculateTotal(res.data);
-      })
-      .catch(err => console.error('Gagal ambil cart:', err));
-  };
-
   useEffect(() => {
-    // Pastikan session_id sudah ada sebelum set header
-    const sessionId = localStorage.getItem('session_id');
-    if (sessionId) {
-      axios.defaults.headers.common['x-session-id'] = sessionId;
-    }
     fetchCart();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const fetchCart = async () => {
+    try {
+      const response = await axios.get(`${BASE_URL}/cart`);
+      setCartItems(response.data);
+      calculateTotal(response.data);
+    } catch (error) {
+      console.error('Gagal ambil cart:', error);
+    }
+  };
 
   const calculateTotal = (items) => {
     const total = items.reduce((sum, item) => sum + item.quantity * item.harga, 0);
     setTotalPrice(total);
   };
 
-  const handleIncrease = (id_cart, currentQty) => {
+  const handleIncrease = async (id_cart, currentQty) => {
     const newQty = currentQty + 1;
-    axios.put(`${BASE_URL}/cart/${id_cart}`, { quantity: newQty })
-      .then(() => fetchCart())
-      .catch(err => console.error('Gagal update quantity:', err));
+    try {
+      await axios.put(`${BASE_URL}/cart/${id_cart}`, { quantity: newQty });
+      fetchCart();
+    } catch (error) {
+      console.error('Gagal update quantity:', error);
+    }
   };
 
-  const handleDecrease = (id_cart, currentQty) => {
+  const handleDecrease = async (id_cart, currentQty) => {
     if (currentQty <= 1) return;
     const newQty = currentQty - 1;
-    axios.put(`${BASE_URL}/cart/${id_cart}`, { quantity: newQty })
-      .then(() => fetchCart())
-      .catch(err => console.error('Gagal update quantity:', err));
+    try {
+      await axios.put(`${BASE_URL}/cart/${id_cart}`, { quantity: newQty });
+      fetchCart();
+    } catch (error) {
+      console.error('Gagal update quantity:', error);
+    }
   };
 
-  const handleRemove = (id_cart) => {
-    axios.delete(`${BASE_URL}/cart/${id_cart}`)
-      .then(() => fetchCart())
-      .catch(err => console.error('Gagal hapus item:', err));
+  const handleRemove = async (id_cart) => {
+    try {
+      await axios.delete(`${BASE_URL}/cart/${id_cart}`);
+      fetchCart();
+    } catch (error) {
+      console.error('Gagal hapus item:', error);
+    }
   };
 
   const handleCheckout = () => {
     localStorage.setItem('checkoutItems', JSON.stringify(cartItems));
     localStorage.setItem('checkoutTotalPrice', totalPrice);
     navigate('/checkout', {
-      state: {
-        items: cartItems,
-        totalPrice: totalPrice,
-      }
+      state: { items: cartItems, totalPrice }
     });
   };
 
-  if (cartItems.length === 0) return <div>Keranjang kamu kosong!</div>;
+  if (cartItems.length === 0) {
+    return (
+      <div className="cart-container">
+        <button
+          className="back-icon"
+          onClick={() => navigate(-1)}
+          aria-label="Kembali"
+        >
+          ←
+        </button>
+        <h2>Keranjang Belanja</h2>
+        <div>Keranjang kamu kosong!</div>
+      </div>
+    );
+  }
 
   return (
     <div className="cart-container">
       <button
         className="back-icon"
         onClick={() => navigate(-1)}
-        style={{
-          border: 'none',
-          background: 'none',
-          fontSize: '1.5rem',
-          cursor: 'pointer'
-        }}
         aria-label="Kembali"
       >
         ←
@@ -90,18 +99,28 @@ const Cart = () => {
         {cartItems.map(item => (
           <li key={item.id_cart} className="cart-item">
             <img
-              src={item.foto_menu ? item.foto_menu : '/placeholder.png'} // jika foto_menu kosong, tampilkan placeholder
+              src={item.foto_menu || '/placeholder.png'}
               alt={item.nama_menu}
               className="cart-item-img"
+              onError={(e) => {
+                e.target.onerror = null;
+                e.target.src = '/placeholder.png';
+              }}
             />
             <div className="cart-item-info">
               <h3>{item.nama_menu}</h3>
               <div className="quantity-control">
-                <button onClick={() => handleDecrease(item.id_cart, item.quantity)} aria-label={`Kurangi jumlah ${item.nama_menu}`}>
+                <button
+                  onClick={() => handleDecrease(item.id_cart, item.quantity)}
+                  aria-label={`Kurangi jumlah ${item.nama_menu}`}
+                >
                   -
                 </button>
                 <span>{item.quantity}</span>
-                <button onClick={() => handleIncrease(item.id_cart, item.quantity)} aria-label={`Tambah jumlah ${item.nama_menu}`}>
+                <button
+                  onClick={() => handleIncrease(item.id_cart, item.quantity)}
+                  aria-label={`Tambah jumlah ${item.nama_menu}`}
+                >
                   +
                 </button>
               </div>
