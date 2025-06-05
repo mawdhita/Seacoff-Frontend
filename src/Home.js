@@ -101,7 +101,7 @@ const Home = () => {
             filteredCoffees.map((coffee, idx) => (
               <div key={idx} className="coffee-card">
                 <img
-                  src={coffee.foto_menu ? coffee.foto_menu : `${BASE_URL}/uploads/${foto_menu}`}
+                  src={coffee.foto_menu ? coffee.foto_menu : `${BASE_URL}/uploads`}
                   alt={coffee.nama_menu}
                 />
                 <h3>{coffee.nama_menu}</h3>
