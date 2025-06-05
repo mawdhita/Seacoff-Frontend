@@ -23,7 +23,7 @@ const Nota = () => {
         </div>
 
         <div className="nota-info"><strong>Nama:</strong> {customerName}</div>
-        <div className="nota-info"><strong>Menu:</strong> {item.nama_menu}  {quantity}</div>
+        <div className="nota-info"><strong>Menu:</strong> {menu?.nama_menu}*{quantity}</div>
         <div className="nota-info"><strong>Tanggal:</strong> {tanggal}</div>
         <div className="nota-info"><strong>Waktu:</strong> {waktu}</div>
 
