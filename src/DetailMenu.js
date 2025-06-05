@@ -52,7 +52,7 @@ const handleAddToCart = () => {
 
   if (!menu) return <div>Loading...</div>;
 
-  const getImage = (fotoMenu) => {
+const getImage = (fotoMenu) => {
     if (!fotoMenu) return `${BASE_URL}/uploads/placeholder.png`;  // <-- Ganti localhost jadi BASE_URL
     return `${BASE_URL}/uploads/${fotoMenu}`;                     // <-- Ganti localhost jadi BASE_URL
   };
