@@ -29,10 +29,7 @@ const Menu = () => {
 
   const categories = ['All', 'Minuman', 'Makanan'];
 
-  const getImage = (fotoMenu) => {
-    if (!fotoMenu) return `${BASE_URL}/uploads/placeholder.png`;
-    return `${BASE_URL}/uploads/${fotoMenu}`;
-  };
+
 
   return (
     <div className="menu-container">
@@ -68,10 +65,13 @@ const Menu = () => {
         ) : (
           filteredMenus.map((menu, idx) => (
             <div className="menu-card" key={idx}>
-              <img src={getImage(menu.foto_menu)} alt={menu.nama_menu} />
+               <img 
+                  src={`https://raw.githubusercontent.com/mawdhita/Seacoff-Backend/main/uploads/${menu.foto_menu}`} 
+                  alt={menu.nama_menu} 
+                />
               <h3>{menu.nama_menu}</h3>
               <p>Rp {menu.harga.toLocaleString()}</p>
-              <button className="order-button" onClick={() => navigate(`/detail/${menu.id_menu}`)}>+ Pesan</button>
+              <button className="order-button" onClick={() => navigate(`/detail/${coffee.id_menu}`)}>+ Pesan</button>
             </div>
           ))
         )}

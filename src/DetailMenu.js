@@ -11,8 +11,6 @@ const DetailMenu = () => {
   const [quantity, setQuantity] = useState(1);
   const [showModal, setShowModal] = useState(false);
   const BASE_URL = 'https://seacoff-backend.vercel.app';  // <-- BASE_URL
-  const RAW_GITHUB_URL = 'https://raw.githubusercontent.com/mawdhita/Seacoff-Backend/main/uploads';
-
 
   useEffect(() => {
     const storedSessionId = localStorage.getItem('session_id');
@@ -55,31 +53,22 @@ const handleAddToCart = () => {
   if (!menu) return <div>Loading...</div>;
 
 
-const getImage = (fotoMenu) => {
-  if (!fotoMenu) return 'https://via.placeholder.com/300x200?text=No+Image';
-  return `${RAW_GITHUB_URL}/${fotoMenu}`;
-};
 
-return (
-  <div className="detail-container">
-    <button
-      onClick={() => navigate(-1)}
-      className="back-button"
-    >
-      <HiArrowLeft size={24} />
-    </button>
+  return (
+    <div className="detail-container">
+      <button
+        onClick={() => navigate(-1)}
+        className="back-button"
+      >
+        <HiArrowLeft size={24} />
+      </button>
 
-    <div className="detail-image-wrapper">
-      <img
-        src={getImage(menu.foto_menu)}
-        alt={menu.nama_menu}
-        className="detail-image"
-        onError={(e) => {
-          e.target.onerror = null;
-          e.target.src = 'https://via.placeholder.com/300x200?text=No+Image';
-        }}
-      />
-    </div>
+      <div className="detail-image-wrapper">
+  <img 
+                  src={`https://raw.githubusercontent.com/mawdhita/Seacoff-Backend/main/uploads/${menu.foto_menu}`} 
+                  alt={menu.nama_menu} 
+                  className='detail-image'
+                />      </div>
 
       <div className="detail-info">
         <h2 className="detail-title">{menu.nama_menu}</h2>
