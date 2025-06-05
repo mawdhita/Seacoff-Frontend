@@ -140,7 +140,7 @@ const Home = () => {
             filteredCoffees.map((coffee, idx) => (
               <div key={idx} className="coffee-card">
                 <img
-                  src={coffee.foto_menu}
+                  src={uploads/coffee.foto_menu}
                   alt={coffee.nama_menu}
                 />
                 <h3>{coffee.nama_menu}</h3>
