@@ -3,7 +3,8 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import './App.css';
 
-const BASE_URL = 'https://seacoff-backend.vercel.app'; // Perbaikan BASE_URL (hapus /api di luar)
+const BASE_URL = 'https://seacoff-backend.vercel.app/api'; // API backend
+const RAW_GITHUB_URL = 'https://raw.githubusercontent.com/mawdhita/Seacoff-Backend/main/uploads'; // URL gambar GitHub
 
 const Cart = () => {
   const [cartItems, setCartItems] = useState([]);
@@ -16,7 +17,7 @@ const Cart = () => {
 
   const fetchCart = async () => {
     try {
-      const response = await axios.get(`${BASE_URL}/api/cart`);
+      const response = await axios.get(`${BASE_URL}/cart`);
       setCartItems(response.data);
       calculateTotal(response.data);
     } catch (error) {
@@ -32,7 +33,7 @@ const Cart = () => {
   const handleIncrease = async (id_cart, currentQty) => {
     const newQty = currentQty + 1;
     try {
-      await axios.put(`${BASE_URL}/api/cart/${id_cart}`, { quantity: newQty });
+      await axios.put(`${BASE_URL}/cart/${id_cart}`, { quantity: newQty });
       fetchCart();
     } catch (error) {
       console.error('Gagal update quantity:', error);
@@ -43,7 +44,7 @@ const Cart = () => {
     if (currentQty <= 1) return;
     const newQty = currentQty - 1;
     try {
-      await axios.put(`${BASE_URL}/api/cart/${id_cart}`, { quantity: newQty });
+      await axios.put(`${BASE_URL}/cart/${id_cart}`, { quantity: newQty });
       fetchCart();
     } catch (error) {
       console.error('Gagal update quantity:', error);
@@ -52,7 +53,7 @@ const Cart = () => {
 
   const handleRemove = async (id_cart) => {
     try {
-      await axios.delete(`${BASE_URL}/api/cart/${id_cart}`);
+      await axios.delete(`${BASE_URL}/cart/${id_cart}`);
       fetchCart();
     } catch (error) {
       console.error('Gagal hapus item:', error);
@@ -65,11 +66,6 @@ const Cart = () => {
     navigate('/checkout', {
       state: { items: cartItems, totalPrice }
     });
-  };
-
-  const getImageUrl = (fotoMenu) => {
-    if (!fotoMenu) return `${BASE_URL}/uploads/placeholder.png`;
-    return `${BASE_URL}/uploads/${fotoMenu}`;
   };
 
   if (cartItems.length === 0) {
@@ -87,6 +83,14 @@ const Cart = () => {
       </div>
     );
   }
+
+  // Fungsi untuk mendapatkan URL gambar dari GitHub, fallback placeholder
+  const getImageUrl = (foto_menu) => {
+    if (!foto_menu || foto_menu.trim() === '') {
+      return 'https://via.placeholder.com/150?text=No+Image';
+    }
+    return `${RAW_GITHUB_URL}/${foto_menu}`;
+  };
 
   return (
     <div className="cart-container">
@@ -109,7 +113,7 @@ const Cart = () => {
               className="cart-item-img"
               onError={(e) => {
                 e.target.onerror = null;
-                e.target.src = `${BASE_URL}/uploads/placeholder.png`;
+                e.target.src = 'https://via.placeholder.com/150?text=No+Image';
               }}
             />
             <div className="cart-item-info">

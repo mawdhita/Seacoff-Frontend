@@ -88,11 +88,10 @@ const Checkout = () => {
       <div className="checkout-card">
         {items.map((item, index) => (
           <div className="checkout-item" key={index}>
-            <img
-              src={`${BASE_URL}/uploads/${item.foto_menu}`}
-              alt={item.nama_menu}
-              className="item-img-side"
-            />
+            <img 
+                  src={`https://raw.githubusercontent.com/mawdhita/Seacoff-Backend/main/uploads/${item.foto_menu}`} 
+                  alt={item.nama_menu} 
+                />
             <div className="item-info">
               <div className="item-title">{item.nama_menu}</div>
               <div className="item-sub">{item.kategori}</div>
