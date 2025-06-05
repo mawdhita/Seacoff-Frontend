@@ -3,7 +3,7 @@ import axios from 'axios';
 import { useLocation, useNavigate } from 'react-router-dom';
 import './App.css';
 
-const BASE_URL = 'https://seacoff-backend.vercel.app/';
+const BASE_URL = 'https://seacoff-backend.vercel.app';
 
 const Checkout = () => {
   const location = useLocation();
@@ -60,7 +60,7 @@ const Checkout = () => {
     console.log("📦 Data dikirim ke backend:", data);
 
     try {
-      const res = await axios.post(`${BASE_URL}api/orders`, data);
+      const res = await axios.post(`${BASE_URL}/api/orders`, data);
       console.log("✅ Respon dari backend:", res.data);
 
       navigate('/nota', {
