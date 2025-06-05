@@ -4,7 +4,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 const Nota = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { nama_menu, quantity, total, customerName } = location.state || {};
+  const { items, quantity, total, customerName } = location.state || {};
 
   const currentDate = new Date();
   const tanggal = currentDate.toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' });
@@ -23,7 +23,14 @@ const Nota = () => {
         </div>
 
         <div className="nota-info"><strong>Nama:</strong> {customerName}</div>
-        <div className="nota-info"><strong>Menu:</strong> {nama_menu}</div>
+<div className="nota-info">
+  <strong>Menu:</strong>
+  <ul>
+    {items && items.map((item, index) => (
+      <li key={index}>{item.nama_menu} x {item.quantity} - Rp {item.harga.toLocaleString()}</li>
+    ))}
+  </ul>
+</div>
         <div className="nota-info"><strong>Tanggal:</strong> {tanggal}</div>
         <div className="nota-info"><strong>Waktu:</strong> {waktu}</div>
 
