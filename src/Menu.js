@@ -71,7 +71,7 @@ const Menu = () => {
                 />
               <h3>{menu.nama_menu}</h3>
               <p>Rp {menu.harga.toLocaleString()}</p>
-              <button className="order-button" onClick={() => navigate(`/detail/${coffee.id_menu}`)}>+ Pesan</button>
+              <button className="order-button" onClick={() => navigate(`/detail/${menu.id_menu}`)}>+ Pesan</button>
             </div>
           ))
         )}
