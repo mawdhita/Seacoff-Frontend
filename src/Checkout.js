@@ -66,13 +66,12 @@ const Checkout = () => {
 navigate('/nota', {
   state: {
     items: items.map(item => ({
-      nama_menu: item.nama_menu,
+      nama_menu: item.nama_menu || item.nama_produk || item.nama || 'Unknown',
       quantity: item.quantity,
       harga: item.harga
     })),
     total,
     customerName,
-    nama_menu,
     breakdown: {
       subtotal,
       ppn,
