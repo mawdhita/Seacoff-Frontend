@@ -32,7 +32,7 @@ const DetailMenu = () => {
   const handleDecrease = () => setQuantity(prev => (prev > 1 ? prev - 1 : 1));
 
 const handleAddToCart = () => {
-  axios.post(`${BASE_URL}/api/cart`, {
+  axios.post(`${BASE_URL}/api/orders`, {
       id_menu: menu.id_menu,
       quantity
     })
