@@ -60,7 +60,7 @@ const Checkout = () => {
     console.log("📦 Data dikirim ke backend:", data);
 
     try {
-      const res = await axios.post(`${BASE_URL}/orders`, data);
+      const res = await axios.post(`${BASE_URL}/orders`);
       console.log("✅ Respon dari backend:", res.data);
 
       navigate('/nota', {
