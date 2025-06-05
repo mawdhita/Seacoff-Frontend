@@ -72,6 +72,7 @@ navigate('/nota', {
     })),
     total,
     customerName,
+    nama_menu,
     breakdown: {
       subtotal,
       ppn,
