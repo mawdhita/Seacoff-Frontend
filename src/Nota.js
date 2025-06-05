@@ -27,7 +27,7 @@ const Nota = () => {
   <strong>Menu:</strong>
   <ul>
     {items && items.map((item, index) => (
-      <li key={index}>{item.nama_menu} x {item.quantity} - Rp {item.harga.toLocaleString()}</li>
+      <li key={index}>{item.nama_menu} x {item.quantity} </li>
     ))}
   </ul>
 </div>
