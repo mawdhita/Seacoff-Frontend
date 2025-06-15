@@ -12,6 +12,7 @@ import {
   Star,
   DollarSign
 } from 'lucide-react';
+import axios from 'axios';
 
 const Dashboard = () => {
   const [penjualanMingguan, setPenjualanMingguan] = useState(0);
