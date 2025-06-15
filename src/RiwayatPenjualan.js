@@ -5,30 +5,45 @@ import { Link } from 'react-router-dom';
 const RiwayatPenjualan = () => {
   const [data, setData] = useState([]);
 
+  const fetchData = async () => {
+    try {
+      const res = await axios.get('https://seacoff-backend.vercel.app/orders');
+      const rawData = res.data;
+
+      const groupedData = rawData.reduce((acc, item) => {
+        if (!acc[item.id_order]) {
+          acc[item.id_order] = {
+            id_order: item.id_order,
+            nama_user: item.nama_user,
+            total_pesanan: item.total_pesanan,
+            status: item.status,
+            produk: []
+          };
+        }
+        acc[item.id_order].produk.push(`${item.nama_produk} x ${item.jumlah}`);
+        return acc;
+      }, {});
+
+      setData(Object.values(groupedData));
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   useEffect(() => {
-    axios.get('https://seacoff-backend.vercel.app/orders')
-      .then(res => {
-        const rawData = res.data;
-
-        // Group data berdasarkan id_order
-        const groupedData = rawData.reduce((acc, item) => {
-          if (!acc[item.id_order]) {
-            acc[item.id_order] = {
-              id_order: item.id_order,
-              nama_user: item.nama_user,
-              total_pesanan: item.total_pesanan,
-              produk: []
-            };
-          }
-          acc[item.id_order].produk.push(`${item.nama_produk} x ${item.jumlah}`);
-          return acc;
-        }, {});
-
-        // Ubah object ke array
-        setData(Object.values(groupedData));
-      })
-      .catch(err => console.error(err));
+    fetchData();
   }, []);
+
+  const handleStatusChange = async (id_order, newStatus) => {
+    try {
+      await axios.patch(`https://seacoff-backend.vercel.app/api/orders/${id_order}/status`, {
+        status: newStatus
+      });
+      fetchData(); // Refresh data
+    } catch (error) {
+      console.error('Gagal update status:', error);
+    }
+  };
 
   const totalOrders = data.length;
 
@@ -71,19 +86,33 @@ const RiwayatPenjualan = () => {
           <table style={{ width: '100%', borderCollapse: 'collapse' }}>
             <thead style={{ background: '#f0f0f0' }}>
               <tr>
-                <th style={{ padding: '10px', border: '1px solid #ddd' }}>ID Order</th>
-                <th style={{ padding: '10px', border: '1px solid #ddd' }}>Nama User</th>
-                <th style={{ padding: '10px', border: '1px solid #ddd' }}>Total</th>
-                <th style={{ padding: '10px', border: '1px solid #ddd' }}>Produk</th>
+                <th style={th}>ID Order</th>
+                <th style={th}>Nama User</th>
+                <th style={th}>Total</th>
+                <th style={th}>Produk</th>
+                <th style={th}>Status</th>
+                <th style={th}>Aksi</th>
               </tr>
             </thead>
             <tbody>
               {data.map((item, idx) => (
                 <tr key={idx}>
-                  <td style={{ padding: '8px', border: '1px solid #ddd' }}>{item.id_order}</td>
-                  <td style={{ padding: '8px', border: '1px solid #ddd' }}>{item.nama_user}</td>
-                  <td style={{ padding: '8px', border: '1px solid #ddd' }}>Rp {parseFloat(item.total_pesanan).toLocaleString()}</td>
-                  <td style={{ padding: '8px', border: '1px solid #ddd' }}>{item.produk.join(', ')}</td>
+                  <td style={td}>{item.id_order}</td>
+                  <td style={td}>{item.nama_user}</td>
+                  <td style={td}>Rp {parseFloat(item.total_pesanan).toLocaleString()}</td>
+                  <td style={td}>{item.produk.join(', ')}</td>
+                  <td style={td}>{item.status}</td>
+                  <td style={td}>
+                    <select
+                      value={item.status}
+                      onChange={(e) => handleStatusChange(item.id_order, e.target.value)}
+                      style={{ padding: '5px', borderRadius: '4px' }}
+                    >
+                      <option value="pending">Pending</option>
+                      <option value="paid">Paid</option>
+                      <option value="canceled">Canceled</option>
+                    </select>
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -92,6 +121,17 @@ const RiwayatPenjualan = () => {
       </div>
     </div>
   );
+};
+
+const th = {
+  padding: '10px',
+  border: '1px solid #ddd',
+  textAlign: 'left'
+};
+
+const td = {
+  padding: '8px',
+  border: '1px solid #ddd'
 };
 
 export default RiwayatPenjualan;
