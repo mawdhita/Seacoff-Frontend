@@ -11,27 +11,29 @@ const Login = () => {
   const [username, setUsername] = useState(""); // ganti dari "email"
   const [password, setPassword] = useState("");
 
- const handleLogin = async () => {
-  if (!username || !password) {
-    alert("Mohon masukkan username dan password.");
-    return;
-  }
+  const handleLogin = async () => {
+    if (!username || !password) {
+      alert("Mohon masukkan username dan password.");
+      return;
+    }
 
-  try {
-    const res = await axios.post("https://seacoff-backend.vercel.app/api/auth/login", {
-      username,
-      password,
-    });
+    try {
+      const res = await axios.post(`${BASE_URL}/api/auth/login`, {
+        username,
+        password,
+      });
 
-    // ✅ Simpan token sederhana di localStorage
-    localStorage.setItem("authToken", "loginSuccess");
+      // ✅ Simpan token sederhana di localStorage
+      localStorage.setItem("authToken", res.data.token); // Simpan token yang diterima dari server
 
-    alert("Login berhasil!");
-    navigate("/dashboard");
-  } catch (err) {
-    alert(err.response?.data?.message || "Login gagal");
-  }
-};
+      alert("Login berhasil!");
+      navigate("/dashboard");
+    } catch (err) {
+      // Menangani kesalahan dengan lebih baik
+      const errorMessage = err.response?.data?.message || "Login gagal. Silakan coba lagi.";
+      alert(errorMessage);
+    }
+  };
 
   return (
     <div className="login-page">
