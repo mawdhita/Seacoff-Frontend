@@ -10,12 +10,9 @@ import {
   Title,
   Tooltip,
   Legend,
-  Filler, 
 } from 'chart.js';
 import axios from 'axios';
 import './App.css';
-
-
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
@@ -39,9 +36,8 @@ const Dashboard = () => {
 
     axios.get('https://seacoff-backend.vercel.app/api/best-sellers')
       .then(res => {
-        // Pakai lowercase biar aman dari perbedaan huruf besar/kecil
-        const makanan = res.data.find(item => item.kategori.toLowerCase() === 'makanan');
-        const minuman = res.data.find(item => item.kategori.toLowerCase() === 'minuman');
+        const makanan = res.data.find(item => item.kategori === 'makanan');
+        const minuman = res.data.find(item => item.kategori === 'minuman');
         setBestSeller({ makanan, minuman });
       })
       .catch(err => console.error('Gagal mengambil data best seller:', err));
