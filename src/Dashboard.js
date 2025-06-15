@@ -23,6 +23,12 @@ const Dashboard = () => {
   const [penjualanHarian, setPenjualanHarian] = useState([]);
   const [bestSeller, setBestSeller] = useState({ makanan: null, minuman: null });
 
+  const makananKeywords = ['croffle', 'rice', 'toast', 'nasi', 'roti', 'mie', 'ayam', 'kue'];
+  const minumanKeywords = ['iced', 'kopi', 'espresso', 'americano', 'tea', 'lemonade', 'latte', 'milk', 'mocktail'];
+
+  const isMakanan = (nama) => makananKeywords.some(keyword => nama.toLowerCase().includes(keyword));
+  const isMinuman = (nama) => minumanKeywords.some(keyword => nama.toLowerCase().includes(keyword));
+
   useEffect(() => {
     axios.get('https://seacoff-backend.vercel.app/api/sales-per-week')
       .then(res => {
@@ -37,8 +43,9 @@ const Dashboard = () => {
 
     axios.get('https://seacoff-backend.vercel.app/api/best-sellers')
       .then(res => {
-        const makanan = res.data.find(item => item.kategori === 'makanan');
-        const minuman = res.data.find(item => item.kategori === 'minuman');
+        const data = res.data;
+        const makanan = data.find(item => isMakanan(item.nama_produk));
+        const minuman = data.find(item => isMinuman(item.nama_produk));
         setBestSeller({ makanan, minuman });
       })
       .catch(err => console.error('Gagal mengambil data best seller:', err));
