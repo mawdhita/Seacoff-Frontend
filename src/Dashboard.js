@@ -34,6 +34,7 @@ const Dashboard = () => {
   const [bestSeller, setBestSeller] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const BASE_URL = 'https://seacoff-backend.vercel.app';  // <-- BASE_URL
 
   useEffect(() => {
     const fetchData = async () => {
@@ -42,7 +43,7 @@ const Dashboard = () => {
         setError(null);
 
         // Fetch weekly sales data
-        const weeklyResponse = await axios.get('https://seacoff-backend.vercel.app/api/sales-per-week');
+        const weeklyResponse = await axios.get('https://seacoff-backend.vercel.app/api/sales/sales-per-week');
         if (weeklyResponse.data && weeklyResponse.data.length > 0) {
           // Calculate total sales and orders from weekly data
           const totalWeeklySales = weeklyResponse.data.reduce((sum, week) => sum + (week.total_sales || 0), 0);
@@ -53,13 +54,13 @@ const Dashboard = () => {
         }
 
         // Fetch daily sales data
-        const dailyResponse = await axios.get('https://seacoff-backend.vercel.app/api/sales-per-day');
+        const dailyResponse = await axios.get('https://seacoff-backend.vercel.app/api/sales/sales-per-day');
         if (dailyResponse.data) {
           setPenjualanHarian(dailyResponse.data);
         }
 
         // Fetch best sellers data
-        const bestSellerResponse = await axios.get('https://seacoff-backend.vercel.app/api/best-sellers');
+        const bestSellerResponse = await axios.get('https://seacoff-backend.vercel.app/api/sales/best-sellers');
         if (bestSellerResponse.data) {
           setBestSeller(bestSellerResponse.data);
         }
