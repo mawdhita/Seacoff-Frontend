@@ -51,8 +51,8 @@ const Dashboard = () => {
         setPenjualanHarian(Array.isArray(dayRes.data) ? dayRes.data : []);
         
         if (Array.isArray(bestRes.data)) {
-          const makanan = bestRes.data.find(i => i.kategori.toLowerCase() === 'makanan') || null;
-          const minuman = bestRes.data.find(i => i.kategori.toLowerCase() === 'minuman') || null;
+const makanan = res.data.find(item => item.kategori?.toLowerCase() === 'makanan');
+const minuman = res.data.find(item => item.kategori?.toLowerCase() === 'minuman');
           setBestSeller({ makanan, minuman });
         } else {
           setBestSeller({ makanan: null, minuman: null });
