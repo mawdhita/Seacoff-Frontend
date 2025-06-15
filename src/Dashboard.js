@@ -16,18 +16,18 @@ const Dashboard = () => {
   const [bestSeller, setBestSeller] = useState({ makanan: null, minuman: null });
 
   useEffect(() => {
-    axios.get('https://seacoff-backend.vercel.app/api/sales-per-week')
+    axios.get('https://seacoff-backend.vercel.app/api/sales/sales-per-week')
       .then(res => {
         setPenjualanMingguan(res.data.total_income);
         setJumlahMenuMingguan(res.data.total_items);
       })
       .catch(err => console.error('Gagal mengambil data penjualan mingguan:', err));
 
-    axios.get('https://seacoff-backend.vercel.app/api/sales-per-day')
+    axios.get('https://seacoff-backend.vercel.app/api/sales/sales-per-day')
       .then(res => setPenjualanHarian(res.data))
       .catch(err => console.error('Gagal mengambil data penjualan harian:', err));
 
-    axios.get('https://seacoff-backend.vercel.app/api/best-sellers')
+    axios.get('https://seacoff-backend.vercel.app/api/sales/best-sellers')
       .then(res => {
         // Pakai lowercase biar aman dari perbedaan huruf besar/kecil
         const makanan = res.data.find(item => item.kategori.toLowerCase() === 'makanan');
