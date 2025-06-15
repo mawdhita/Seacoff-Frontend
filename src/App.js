@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState, useEffect } from "react";
 import axios from 'axios';  // <== Tambahkan ini
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Landing from './Landing';
 import Home from './Home';
 import DetailMenu from './DetailMenu';
