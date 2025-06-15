@@ -20,7 +20,12 @@ const RiwayatPenjualan = () => {
             produk: []
           };
         }
-        acc[item.id_order].produk.push(`${item.nama_produk} x ${item.jumlah}`);
+
+        // Tambahkan produk hanya jika data lengkap
+        if (item.nama_produk && item.jumlah) {
+          acc[item.id_order].produk.push(`${item.nama_produk} x ${item.jumlah}`);
+        }
+
         return acc;
       }, {});
 
@@ -100,7 +105,9 @@ const RiwayatPenjualan = () => {
                   <td style={td}>{item.id_order}</td>
                   <td style={td}>{item.nama_user}</td>
                   <td style={td}>Rp {parseFloat(item.total_pesanan).toLocaleString()}</td>
-                  <td style={td}>{item.produk.join(', ')}</td>
+                  <td style={td}>
+                    {item.produk.length > 0 ? item.produk.join(', ') : '-'}
+                  </td>
                   <td style={td}>{item.status}</td>
                   <td style={td}>
                     <select
