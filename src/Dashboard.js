@@ -16,14 +16,14 @@ const Dashboard = () => {
   const [bestSeller, setBestSeller] = useState({ makanan: null, minuman: null });
 
   useEffect(() => {
-    axios.get('https://seacoff-backend.vercel.app/api/orders/sales-per-week')
+    axios.get('https://seacoff-backend.vercel.app/api/sales-per-week')
       .then(res => {
         setPenjualanMingguan(res.data.total_income);
         setJumlahMenuMingguan(res.data.total_items);
       })
       .catch(err => console.error('Gagal mengambil data penjualan mingguan:', err));
 
-    axios.get('https://seacoff-backend.vercel.app/api/orders/sales-per-day')
+    axios.get('https://seacoff-backend.vercel.app/api/sales-per-day')
       .then(res => setPenjualanHarian(res.data))
       .catch(err => console.error('Gagal mengambil data penjualan harian:', err));
 
