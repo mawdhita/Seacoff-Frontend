@@ -10,69 +10,53 @@ import {
   Title,
   Tooltip,
   Legend,
-  Filler,
+  Filler, 
 } from 'chart.js';
 import axios from 'axios';
 import './App.css';
 
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend,
-  Filler // ✅ Registrasi plugin Filler agar `fill: true` berfungsi
-);
+
+
+ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
 const Dashboard = () => {
   const [penjualanMingguan, setPenjualanMingguan] = useState(0);
   const [jumlahMenuMingguan, setJumlahMenuMingguan] = useState(0);
   const [penjualanHarian, setPenjualanHarian] = useState([]);
   const [bestSeller, setBestSeller] = useState({ makanan: null, minuman: null });
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
 
   useEffect(() => {
-    setLoading(true);
-    setError(null);
-
-    Promise.all([
-      axios.get('https://seacoff-backend.vercel.app/api/sales/sales-per-week'),
-      axios.get('https://seacoff-backend.vercel.app/api/sales/sales-per-day'),
-      axios.get('https://seacoff-backend.vercel.app/api/sales/best-sellers'),
-    ])
-      .then(([weekRes, dayRes, bestRes]) => {
-        const w = weekRes.data;
-        setPenjualanMingguan(w.total_income ?? 0);
-        setJumlahMenuMingguan(w.total_items ?? 0);
-
-        setPenjualanHarian(Array.isArray(dayRes.data) ? dayRes.data : []);
-        
-        if (Array.isArray(bestRes.data)) {
-          const makanan = bestRes.data.find(i => i.kategori.toLowerCase() === 'makanan') || null;
-          const minuman = bestRes.data.find(i => i.kategori.toLowerCase() === 'minuman') || null;
-          setBestSeller({ makanan, minuman });
-        } else {
-          setBestSeller({ makanan: null, minuman: null });
-        }
+    axios.get('https://seacoff-backend.vercel.app/api/sales/sales-per-week')
+      .then(res => {
+        setPenjualanMingguan(res.data.total_income);
+        setJumlahMenuMingguan(res.data.total_items);
       })
-      .catch(err => {
-        console.error('🔥 Error fetching dashboard data:', err.message);
-        setError('Gagal memuat data dari server.');
+      .catch(err => console.error('Gagal mengambil data penjualan mingguan:', err));
+
+    axios.get('https://seacoff-backend.vercel.app/api/sales/sales-per-day')
+      .then(res => setPenjualanHarian(res.data))
+      .catch(err => console.error('Gagal mengambil data penjualan harian:', err));
+
+    axios.get('https://seacoff-backend.vercel.app/api/sales/best-sellers')
+      .then(res => {
+        // Pakai lowercase biar aman dari perbedaan huruf besar/kecil
+        const makanan = res.data.find(item => item.kategori.toLowerCase() === 'makanan');
+        const minuman = res.data.find(item => item.kategori.toLowerCase() === 'minuman');
+        setBestSeller({ makanan, minuman });
       })
-      .finally(() => setLoading(false));
+      .catch(err => console.error('Gagal mengambil data best seller:', err));
   }, []);
 
-  const formatRupiah = number =>
-    new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(number);
+  const formatRupiah = (number) => {
+    return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(number);
+  };
 
-  // Siapkan data chart
   const chartData = {
     labels: penjualanHarian.map(item => {
-      const d = new Date(item.date);
-      return d.toLocaleDateString('id-ID', { day: '2-digit', month: '2-digit' });
+      const dateObj = new Date(item.date);
+      const day = dateObj.getDate().toString().padStart(2, '0');
+      const month = (dateObj.getMonth() + 1).toString().padStart(2, '0');
+      return `${day}/${month}`;
     }),
     datasets: [
       {
@@ -100,7 +84,21 @@ const Dashboard = () => {
       <div style={{ width: '240px', background: 'linear-gradient(to bottom, #4e54c8, #8f94fb)', color: '#fff', padding: '20px' }}>
         <div style={{ fontSize: '30px', fontWeight: 'bold', marginBottom: '30px' }}>F.</div>
         <ul style={{ listStyle: 'none', padding: 0 }}>
-          {/* ...navigasi sama seperti sebelumnya */}
+          <li style={{ marginBottom: '20px', backgroundColor: 'rgba(255, 255, 255, 0.2)', padding: '10px', borderRadius: '8px' }}>
+            <Link to="/dashboard" style={{ color: '#fff', textDecoration: 'none', display: 'flex', alignItems: 'center' }}>
+              📊 <span style={{ marginLeft: '10px' }}>Dashboard</span>
+            </Link>
+          </li>
+          <li style={{ marginBottom: '20px' }}>
+            <Link to="/menu" style={{ color: '#fff', textDecoration: 'none', display: 'flex', alignItems: 'center' }}>
+              🍽️ <span style={{ marginLeft: '10px' }}>Menu</span>
+            </Link>
+          </li>
+          <li style={{ marginBottom: '20px' }}>
+            <Link to="/riwayat-penjualan" style={{ color: '#fff', textDecoration: 'none', display: 'flex', alignItems: 'center' }}>
+              📜 <span style={{ marginLeft: '10px' }}>Riwayat</span>
+            </Link>
+          </li>
         </ul>
       </div>
 
@@ -122,41 +120,36 @@ const Dashboard = () => {
           </div>
         </div>
 
-        {loading && <p>Memuat data...</p>}
-        {error && <p style={{ color: 'red' }}>{error}</p>}
-
-        {!loading && !error && (
-          <div style={{ display: 'flex', gap: '20px' }}>
-            <div style={{ flex: 2, backgroundColor: '#fff', borderRadius: '8px', padding: '20px', boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
-              <h3>Grafik Penjualan Per Minggu</h3>
-              <div style={{ height: '300px' }}>
-                <Line data={chartData} options={chartOptions} />
-              </div>
-            </div>
-
-            <div style={{ flex: 1, backgroundColor: '#fff', borderRadius: '8px', padding: '20px', boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
-              <h3>Menu Terlaris</h3>
-              <ul style={{ listStyle: 'none', padding: 0 }}>
-                {bestSeller.makanan ? (
-                  <li style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px' }}>
-                    <span>🍽️ {bestSeller.makanan.nama_produk}</span>
-                    <span>{bestSeller.makanan.total_terjual}x</span>
-                  </li>
-                ) : (
-                  <li>Tidak ada data makanan</li>
-                )}
-                {bestSeller.minuman ? (
-                  <li style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px' }}>
-                    <span>🥤 {bestSeller.minuman.nama_produk}</span>
-                    <span>{bestSeller.minuman.total_terjual}x</span>
-                  </li>
-                ) : (
-                  <li>Tidak ada data minuman</li>
-                )}
-              </ul>
+        <div style={{ display: 'flex', gap: '20px' }}>
+          <div style={{ flex: 2, backgroundColor: '#fff', borderRadius: '8px', padding: '20px', boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
+            <h3>Grafik Penjualan Per Minggu</h3>
+            <div style={{ height: '300px' }}>
+              <Line data={chartData} options={chartOptions} />
             </div>
           </div>
-        )}
+
+          <div style={{ flex: 1, backgroundColor: '#fff', borderRadius: '8px', padding: '20px', boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
+            <h3>Menu Terlaris</h3>
+            <ul style={{ listStyle: 'none', padding: 0 }}>
+              {bestSeller.makanan ? (
+                <li style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px' }}>
+                  <span>🍽️ {bestSeller.makanan.nama_produk}</span>
+                  <span>{bestSeller.makanan.total_terjual}x</span>
+                </li>
+              ) : (
+                <li>Tidak ada data makanan</li>
+              )}
+              {bestSeller.minuman ? (
+                <li style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px' }}>
+                  <span>🥤 {bestSeller.minuman.nama_produk}</span>
+                  <span>{bestSeller.minuman.total_terjual}x</span>
+                </li>
+              ) : (
+                <li>Tidak ada data minuman</li>
+              )}
+            </ul>
+          </div>
+        </div>
       </div>
     </div>
   );
