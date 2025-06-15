@@ -10,6 +10,7 @@ import {
   Title,
   Tooltip,
   Legend,
+  Filler,
 } from 'chart.js';
 import axios from 'axios';
 import './App.css';
