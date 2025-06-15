@@ -53,10 +53,9 @@ const Dashboard = () => {
           { nama_produk: 'Mocha Delight', total_terjual: 43 }
         ]);
 
-   
-        const weeklyResponse = await axios.get('https://seacoff-backend.vercel.app/api/dashboardsales-per-week');
-        const dailyResponse = await axios.get('https://seacoff-backend.vercel.app/api/dashboard/sales-per-day');
-        const bestSellerResponse = await axios.get('https://seacoff-backend.vercel.app/api/dashboard/best-sellers');
+const weeklyResponse = await axios.get('https://seacoff-backend.vercel.app/api/dashboard/sales-per-week');
+const dailyResponse = await axios.get('https://seacoff-backend.vercel.app/api/dashboard/sales-per-day');
+const bestSellerResponse = await axios.get('https://seacoff-backend.vercel.app/api/dashboard/best-sellers');
    
 
       } catch (err) {
