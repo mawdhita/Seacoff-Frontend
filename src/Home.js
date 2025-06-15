@@ -140,9 +140,9 @@ const Home = () => {
             filteredCoffees.map((coffee, idx) => (
               <div key={idx} className="coffee-card">
                <img 
-  src={`https://raw.githubusercontent.com/mawdhita/Seacoff-Backend/main/uploads/${coffee.foto_menu}`} 
-  alt={coffee.nama_menu} 
-/>
+                  src={`https://raw.githubusercontent.com/mawdhita/Seacoff-Backend/main/uploads/${coffee.foto_menu}`} 
+                  alt={coffee.nama_menu} 
+                />
 
                 <h3>{coffee.nama_menu}</h3>
                 <p>Rp {coffee.harga}</p>
