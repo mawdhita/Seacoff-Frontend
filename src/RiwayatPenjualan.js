@@ -36,8 +36,9 @@ const RiwayatPenjualan = () => {
 
   const handleStatusChange = async (id_order, newStatus) => {
     try {
-      await axios.patch(`https://seacoff-backend.vercel.app/api/orders/${id}/status`, { status: newStatus });
-
+      await axios.patch(`https://seacoff-backend.vercel.app/api/orders/${id_order}/status`, {
+        status: newStatus
+      });
       fetchData(); // Refresh data
     } catch (error) {
       console.error('Gagal update status:', error);
