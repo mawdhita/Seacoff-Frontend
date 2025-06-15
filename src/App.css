@@ -1,3 +1,191 @@
+/* Background utama */
+.login-page {
+  background-image: url('./asset/mike-kenneally-zlwDJoKTuA8-unsplash.jpg');
+  background-size: cover;
+  background-position: center;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Kotak kaca */
+.glass-container {
+  background: rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(10px);
+  padding: 2rem;
+  border-radius: 20px;
+  width: 320px;
+  text-align: center;
+}
+
+/* Icon login */
+.login-icon {
+  background: #fff;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto 1rem auto;
+  font-size: 24px;
+}
+
+/* Subtext */
+.login-subtext {
+  font-size: 0.9rem;
+  color: #555;
+  margin-bottom: 1.5rem;
+}
+
+/* Input wrapper buat icon sama input */
+.input-wrapper {
+  position: relative;
+  margin-bottom: 1rem;
+}
+
+.input-icon {
+  position: absolute;
+  top: 50%;
+  left: 10px;
+  transform: translateY(-50%);
+  color: #aaa;
+}
+
+.login-input {
+  width: 100%;
+  padding: 10px 10px 10px 35px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  outline: none;
+}
+
+/* Forgot password */
+.forgot-password {
+  text-align: right;
+  margin-bottom: 1rem;
+}
+
+.forgot-password a {
+  font-size: 0.8rem;
+  color: #007bff;
+  text-decoration: none;
+}
+
+/* Button Get Started */
+.login-button {
+  width: 100%;
+  padding: 10px;
+  background-color: #000;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  margin-bottom: 1rem;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+/* Divider */
+.login-divider {
+  margin: 1rem 0;
+  font-size: 0.8rem;
+  color: #aaa;
+}
+
+/* Tombol provider */
+.login-providers {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.provider-btn {
+  background: #fff;
+  border: none;
+  padding: 10px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+
+/* Full screen wrapper with background image */
+.login-wrapper {
+  height: 100vh;
+  width: 100vw;
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  position: relative;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+/* Blurred overlay side */
+.login-blur-overlay {
+  background-color: rgba(255, 236, 204, 0.6); /* semi-transparent kuning muda */
+  backdrop-filter: blur(12px);
+  width: 40%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Form */
+.login-form-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 80%;
+}
+
+/* Title */
+.login-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #000;
+  margin-bottom: 40px;
+}
+
+/* Input fields */
+.login-input {
+  width: 100%;
+  padding: 14px 20px;
+  margin: 12px 0;
+  border: none;
+  border-radius: 25px;
+  font-style: italic;
+  font-size: 1rem;
+  outline: none;
+  background-color: #487e7e;
+  color: white;
+}
+
+.login-input::placeholder {
+  color: #c2d1d1;
+}
+
+/* Button */
+.login-button {
+  margin-top: 25px;
+  width: 100%;
+  padding: 14px;
+  background-color: #487e7e;
+  border: none;
+  border-radius: 25px;
+  font-weight: bold;
+  color: white;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.login-button:hover {
+  background-color: #386767;
+}
+
+
 /* Landing page */
 @import url('https://fonts.googleapis.com/css2?family=Rubik:wght@400;600;700&display=swap');
 
