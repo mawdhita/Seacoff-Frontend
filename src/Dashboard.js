@@ -15,7 +15,7 @@ import {
 import axios from 'axios';
 import './App.css';
 
-ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
+ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, Filler);
 
 const Dashboard = () => {
   const [penjualanMingguan, setPenjualanMingguan] = useState(0);
@@ -32,8 +32,10 @@ const Dashboard = () => {
   useEffect(() => {
     axios.get('https://seacoff-backend.vercel.app/api/sales-per-week')
       .then(res => {
-        setPenjualanMingguan(res.data.total_income);
-        setJumlahMenuMingguan(res.data.total_items);
+        const income = Number(res.data.total_income);
+        const items = Number(res.data.total_items);
+        setPenjualanMingguan(isNaN(income) ? 0 : income);
+        setJumlahMenuMingguan(isNaN(items) ? 0 : items);
       })
       .catch(err => console.error('Gagal mengambil data penjualan mingguan:', err));
 
@@ -52,6 +54,7 @@ const Dashboard = () => {
   }, []);
 
   const formatRupiah = (number) => {
+    if (isNaN(number) || number == null) return 'Rp0';
     return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(number);
   };
 
