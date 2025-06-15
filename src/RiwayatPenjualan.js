@@ -7,7 +7,7 @@ const RiwayatPenjualan = () => {
 
   const fetchData = async () => {
     try {
-      const res = await axios.get('https://seacoff-backend.vercel.app/api/orders');
+      const res = await axios.get('https://seacoff-backend.vercel.app/orders');
       const rawData = res.data;
 
       const groupedData = rawData.reduce((acc, item) => {
