@@ -50,14 +50,14 @@ const Dashboard = () => {
 
         setPenjualanHarian(Array.isArray(dayRes.data) ? dayRes.data : []);
         
-       if (Array.isArray(res.data)) {
-      const makanan = res.data.find(item => item?.kategori?.toLowerCase() === 'makanan') || null;
-      const minuman = res.data.find(item => item?.kategori?.toLowerCase() === 'minuman') || null;
-      setBestSeller({ makanan, minuman });
-    } else {
-      setBestSeller({ makanan: null, minuman: null });
-    }
-  })
+        if (Array.isArray(bestRes.data)) {
+          const makanan = bestRes.data.find(i => i.kategori.toLowerCase() === 'makanan') || null;
+          const minuman = bestRes.data.find(i => i.kategori.toLowerCase() === 'minuman') || null;
+          setBestSeller({ makanan, minuman });
+        } else {
+          setBestSeller({ makanan: null, minuman: null });
+        }
+      })
       .catch(err => {
         console.error('🔥 Error fetching dashboard data:', err.message);
         setError('Gagal memuat data dari server.');
