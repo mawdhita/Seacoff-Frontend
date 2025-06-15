@@ -6,7 +6,7 @@ const RiwayatPenjualan = () => {
   const [data, setData] = useState([]);
 
   useEffect(() => {
-    axios.get('https://seacoff-backend.vercel.app/api/orders')
+    axios.get('https://seacoff-backend.vercel.app/orders')
       .then(res => {
         const rawData = res.data;
 
