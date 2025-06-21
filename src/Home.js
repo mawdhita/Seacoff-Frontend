@@ -140,7 +140,7 @@ const Home = () => {
             filteredCoffees.map((coffee, idx) => (
               <div key={idx} className="coffee-card">
                <img 
-                  src={`https://raw.githubusercontent.com/mawdhita/Seacoff-Backend/main/uploads/${coffee.foto_menu}`} 
+                  src={`https://seacoff-backend.vercel.app/uploads/${coffee.foto_menu}`} 
                   alt={coffee.nama_menu} 
                 />
 

@@ -100,7 +100,7 @@ const handleCheckout = () => {
         <div className="modal-overlay">
           <div className="modal">
            <img 
-                  src={`https://raw.githubusercontent.com/mawdhita/Seacoff-Backend/main/uploads/check.png`} 
+                  src={`https://seacoff-backend.vercel.app/uploads/check.png`} 
                   className='modal-icon'
                 />
             <h2>Congratulations!</h2>

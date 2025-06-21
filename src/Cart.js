@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import './App.css';
 
 const BASE_URL = 'https://seacoff-backend.vercel.app/api'; 
-const RAW_GITHUB_URL = 'https://raw.githubusercontent.com/mawdhita/Seacoff-Backend/main/uploads'; // URL gambar GitHub
+const RAW_URL = 'https://seacoff-backend.vercel.app/uploads'; 
 
 const Cart = () => {
   const [cartItems, setCartItems] = useState([]);
@@ -88,7 +88,7 @@ const Cart = () => {
     if (!foto_menu || foto_menu.trim() === '') {
       return 'https://via.placeholder.com/150?text=No+Image';
     }
-    return `${RAW_GITHUB_URL}/${foto_menu}`;
+    return `${RAW_URL}/${foto_menu}`;
   };
 
   return (

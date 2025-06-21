@@ -93,7 +93,7 @@ navigate('/nota', {
         {items.map((item, index) => (
           <div className="checkout-item" key={index}>
             <img 
-                  src={`https://raw.githubusercontent.com/mawdhita/Seacoff-Backend/main/uploads/${item.foto_menu}`} 
+                  src={`https://seacoff-backend.vercel.app/uploads/${item.foto_menu}`} 
                   alt={item.nama_menu} 
                 />
             <div className="item-info">

@@ -66,7 +66,7 @@ const Menu = () => {
           filteredMenus.map((menu, idx) => (
             <div className="menu-card" key={idx}>
                <img 
-                  src={`https://raw.githubusercontent.com/mawdhita/Seacoff-Backend/main/uploads/${menu.foto_menu}`} 
+                  src={`https://seacoff-backend.vercel.app/uploads/${menu.foto_menu}`} 
                   alt={menu.nama_menu} 
                 />
               <h3>{menu.nama_menu}</h3>
