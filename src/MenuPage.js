@@ -30,7 +30,7 @@ const MenuPage = () => {
 
   const getMenu = async () => {
     try {
-      const response = await axios.get("https://seacoff-backend.vercel.app/menus");
+      const response = await axios.get("https://seacoff-backend.vercel.app/api/menu");
       setMenu(response.data);
     } catch (error) {
       showToast("Gagal mengambil data menu", "#f44336");
@@ -77,7 +77,7 @@ const MenuPage = () => {
       formData.append("kategori", kategori);
       formData.append("foto_menu", foto);
 
-      await axios.post("https://seacoff-backend.vercel.app/menus", formData, {
+      await axios.post("https://seacoff-backend.vercel.app/api/menu", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
@@ -114,7 +114,7 @@ const MenuPage = () => {
       if (editFoto) formData.append("foto_menu", editFoto);
 
       await axios.put(
-        `https://seacoff-backend.vercel.app/menus/${selectedMenu.id_menu}`,
+        `https://seacoff-backend.vercel.app/api/menu/${selectedMenu.id_menu}`,
         formData,
         { headers: { "Content-Type": "multipart/form-data" } }
       );
@@ -131,7 +131,7 @@ const MenuPage = () => {
     if (!window.confirm("Yakin ingin menghapus menu ini?")) return;
 
     try {
-      await axios.delete(`https://seacoff-backend.vercel.app/menus/${id_menu}`);
+      await axios.delete(`https://seacoff-backend.vercel.app/api/menu/${id_menu}`);
       showToast("Menu berhasil dihapus", "#ff9800");
       getMenu();
     } catch (error) {

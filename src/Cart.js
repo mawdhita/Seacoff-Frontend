@@ -3,7 +3,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import './App.css';
 
-const BASE_URL = 'https://seacoff-backend.vercel.app/api'; // API backend
+const BASE_URL = 'https://seacoff-backend.vercel.app/api'; 
 const RAW_GITHUB_URL = 'https://raw.githubusercontent.com/mawdhita/Seacoff-Backend/main/uploads'; // URL gambar GitHub
 
 const Cart = () => {
@@ -84,7 +84,6 @@ const Cart = () => {
     );
   }
 
-  // Fungsi untuk mendapatkan URL gambar dari GitHub, fallback placeholder
   const getImageUrl = (foto_menu) => {
     if (!foto_menu || foto_menu.trim() === '') {
       return 'https://via.placeholder.com/150?text=No+Image';
