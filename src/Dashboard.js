@@ -97,7 +97,7 @@ const Dashboard = () => {
             </Link>
           </li>
           <li style={{ marginBottom: '20px' }}>
-            <Link to="/menu" style={{ color: '#fff', textDecoration: 'none', display: 'flex', alignItems: 'center' }}>
+            <Link to="/menu-page" style={{ color: '#fff', textDecoration: 'none', display: 'flex', alignItems: 'center' }}>
               🍽️ <span style={{ marginLeft: '10px' }}>Menu</span>
             </Link>
           </li>
