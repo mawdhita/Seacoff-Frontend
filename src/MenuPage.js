@@ -1,28 +1,26 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Table, Modal, Button, Form } from "react-bootstrap";
-import { PencilSquare, Trash } from "react-bootstrap-icons";
-import { Link, useLocation } from "react-router-dom";
+import { Plus, Search, Edit2, Trash2, X, Upload, Menu } from "lucide-react";
 
 const MenuPage = () => {
-  const location = useLocation();
   const [menu, setMenu] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [showAddModal, setShowAddModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [selectedMenu, setSelectedMenu] = useState(null);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const [namaMenu, setNamaMenu] = useState("");
   const [harga, setHarga] = useState("");
   const [foto, setFoto] = useState(null);
   const [deskripsi, setDeskripsi] = useState("");
-  const [kategori, setKategori] = useState("makanan"); // default kategori
+  const [kategori, setKategori] = useState("makanan");
 
   const [editNama, setEditNama] = useState("");
   const [editHarga, setEditHarga] = useState("");
   const [editFoto, setEditFoto] = useState(null);
   const [editDeskripsi, setEditDeskripsi] = useState("");
-  const [editKategori, setEditKategori] = useState("makanan"); // default kategori
+  const [editKategori, setEditKategori] = useState("makanan");
 
   useEffect(() => {
     getMenu();
@@ -33,35 +31,30 @@ const MenuPage = () => {
       const response = await axios.get("https://seacoff-backend.vercel.app/api/menu");
       setMenu(response.data);
     } catch (error) {
-      showToast("Gagal mengambil data menu", "#f44336");
+      showToast("Gagal mengambil data menu", "error");
     }
   };
 
-  const showToast = (message, backgroundColor = "#4CAF50") => {
+  const showToast = (message, type = "success") => {
     const toast = document.createElement("div");
     toast.textContent = message;
-    Object.assign(toast.style, {
-      position: "fixed",
-      top: "20px",
-      right: "20px",
-      backgroundColor,
-      color: "#fff",
-      padding: "12px 20px",
-      borderRadius: "8px",
-      zIndex: 9999,
-      fontSize: "16px",
-      fontWeight: "500",
-      opacity: "0",
-      transition: "opacity 0.3s ease",
-    });
-
+    
+    const colors = {
+      success: "bg-green-500",
+      error: "bg-red-500",
+      warning: "bg-orange-500"
+    };
+    
+    toast.className = `fixed top-6 right-6 ${colors[type]} text-white px-6 py-3 rounded-lg shadow-lg z-50 transform transition-all duration-300 translate-x-full`;
+    
     document.body.appendChild(toast);
-    requestAnimationFrame(() => {
-      toast.style.opacity = "1";
-    });
+    
+    setTimeout(() => {
+      toast.classList.remove("translate-x-full");
+    }, 100);
 
     setTimeout(() => {
-      toast.style.opacity = "0";
+      toast.classList.add("translate-x-full");
       setTimeout(() => {
         document.body.removeChild(toast);
       }, 300);
@@ -90,7 +83,7 @@ const MenuPage = () => {
       setFoto(null);
       getMenu();
     } catch (error) {
-      showToast("Gagal menambahkan menu", "#f44336");
+      showToast("Gagal menambahkan menu", "error");
     }
   };
 
@@ -123,7 +116,7 @@ const MenuPage = () => {
       setShowEditModal(false);
       getMenu();
     } catch (error) {
-      showToast("Gagal update menu", "#f44336");
+      showToast("Gagal update menu", "error");
     }
   };
 
@@ -132,10 +125,10 @@ const MenuPage = () => {
 
     try {
       await axios.delete(`https://seacoff-backend.vercel.app/api/menu/${id_menu}`);
-      showToast("Menu berhasil dihapus", "#ff9800");
+      showToast("Menu berhasil dihapus", "warning");
       getMenu();
     } catch (error) {
-      showToast("Gagal menghapus menu", "#f44336");
+      showToast("Gagal menghapus menu", "error");
     }
   };
 
@@ -143,204 +136,325 @@ const MenuPage = () => {
     item.nama_menu.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  const Modal = ({ show, onClose, title, children }) => {
+    if (!show) return null;
+    
+    return (
+      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <div className="bg-white rounded-2xl max-w-md w-full max-h-screen overflow-y-auto">
+          <div className="flex items-center justify-between p-6 border-b border-gray-200">
+            <h2 className="text-xl font-semibold text-gray-800">{title}</h2>
+            <button
+              onClick={onClose}
+              className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+            >
+              <X size={20} />
+            </button>
+          </div>
+          <div className="p-6">{children}</div>
+        </div>
+      </div>
+    );
+  };
+
   return (
-    <div style={{ display: "flex", minHeight: "100vh", backgroundColor: "#f4f4f4" }}>
+    <div className="flex min-h-screen bg-gray-50">
+      {/* Mobile Sidebar Overlay */}
+      {sidebarOpen && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
+
       {/* Sidebar */}
-      <div style={{ width: "240px", background: "linear-gradient(to bottom, #4e54c8, #8f94fb)", color: "#fff", padding: "20px" }}>
-        <div style={{ fontSize: "30px", fontWeight: "bold", marginBottom: "30px" }}>F.</div>
-        <ul style={{ listStyle: "none", padding: 0 }}>
-          <li style={{ marginBottom: "20px" }}>
-            <Link to="/dashboard" style={{ color: "#fff", textDecoration: "none", display: "flex", alignItems: "center" }}>
-              📊 <span style={{ marginLeft: "10px" }}>Dashboard</span>
-            </Link>
-          </li>
-          <li style={{ marginBottom: "20px", backgroundColor: location.pathname === "/menu" ? "rgba(255, 255, 255, 0.2)" : "transparent", padding: "10px", borderRadius: "8px" }}>
-            <Link to="/menu-page" style={{ color: "#fff", textDecoration: "none", display: "flex", alignItems: "center" }}>
-              🍽️ <span style={{ marginLeft: "10px" }}>Menu</span>
-            </Link>
-          </li>
-          <li style={{ marginBottom: "20px", backgroundColor: location.pathname === "/riwayat-penjualan" ? "rgba(255, 255, 255, 0.2)" : "transparent", padding: "10px", borderRadius: "8px" }}>
-            <Link to="/riwayat-penjualan" style={{ color: "#fff", textDecoration: "none", display: "flex", alignItems: "center" }}>
-              📜 <span style={{ marginLeft: "10px" }}>Riwayat</span>
-            </Link>
-          </li>
-        </ul>
+      <div className={`${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0 fixed lg:static inset-y-0 left-0 z-50 w-64 bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-500 transition-transform duration-300 ease-in-out`}>
+        <div className="flex flex-col h-full p-6">
+          <div className="flex items-center mb-8">
+            <div className="w-10 h-10 bg-white bg-opacity-20 rounded-xl flex items-center justify-center mr-3">
+              <span className="text-white font-bold text-xl">F</span>
+            </div>
+            <span className="text-white text-xl font-bold">FoodAdmin</span>
+          </div>
+          
+          <nav className="flex-1 space-y-2">
+            <a href="/dashboard" className="flex items-center px-4 py-3 text-white hover:bg-white hover:bg-opacity-20 rounded-xl transition-colors">
+              <span className="mr-3">📊</span>
+              Dashboard
+            </a>
+            <a href="/menu-page" className="flex items-center px-4 py-3 text-white bg-white bg-opacity-20 rounded-xl">
+              <span className="mr-3">🍽️</span>
+              Menu
+            </a>
+            <a href="/riwayat-penjualan" className="flex items-center px-4 py-3 text-white hover:bg-white hover:bg-opacity-20 rounded-xl transition-colors">
+              <span className="mr-3">📜</span>
+              Riwayat
+            </a>
+          </nav>
+        </div>
       </div>
 
       {/* Main Content */}
-      <div style={{ flex: 1, padding: "20px" }}>
-        <h1 style={{ fontSize: "28px", marginBottom: "20px" }}>Daftar Menu</h1>
-
-        <div className="d-flex justify-content-between align-items-center mb-3">
-          <Button variant="primary" onClick={() => setShowAddModal(true)}>
-            Tambah Menu Baru
-          </Button>
-          <Form.Control
-            type="text"
-            placeholder="Cari menu..."
-            style={{ width: "300px" }}
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
+      <div className="flex-1 lg:ml-0">
+        {/* Header */}
+        <div className="bg-white shadow-sm border-b border-gray-200 px-6 py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center">
+              <button
+                onClick={() => setSidebarOpen(true)}
+                className="p-2 hover:bg-gray-100 rounded-lg lg:hidden mr-4"
+              >
+                <MenuIcon size={24} />
+              </button>
+              <h1 className="text-2xl font-bold text-gray-800">Daftar Menu</h1>
+            </div>
+          </div>
         </div>
 
-        <Table striped bordered hover responsive style={{ background: "#fff", borderRadius: "8px", overflow: "hidden" }}>
-          <thead style={{ background: "#f0f0f0" }}>
-            <tr>
-              <th>No</th>
-              <th>Nama Menu</th>
-              <th>Deskripsi</th>
-              <th>Kategori</th>
-              <th>Harga</th>
-              <th>Gambar</th>
-              <th>Aksi</th>
-            </tr>
-          </thead>
-          <tbody>
+        {/* Content */}
+        <div className="p-6">
+          {/* Action Bar */}
+          <div className="flex flex-col sm:flex-row gap-4 mb-6">
+            <button
+              onClick={() => setShowAddModal(true)}
+              className="flex items-center px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
+            >
+              <Plus size={20} className="mr-2" />
+              Tambah Menu Baru
+            </button>
+            
+            <div className="relative flex-1 max-w-md">
+              <Search size={20} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+              <input
+                type="text"
+                placeholder="Cari menu..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+              />
+            </div>
+          </div>
+
+          {/* Menu Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {filteredMenu.length > 0 ? (
-              filteredMenu.map((item, index) => (
-                <tr key={item.id_menu}>
-                  <td>{index + 1}</td>
-                  <td>{item.nama_menu}</td>
-                  <td>{item.deskripsi}</td>
-                  <td>{item.kategori}</td>
-                  <td>Rp {item.harga}</td>
-                  <td>
+              filteredMenu.map((item) => (
+                <div key={item.id_menu} className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow">
+                  <div className="aspect-w-16 aspect-h-12 bg-gray-100">
                     <img
                       src={`https://seacoff-backend.vercel.app/uploads/${item.foto_menu}`}
                       alt={item.nama_menu}
-                      width="100"
+                      className="w-full h-48 object-cover"
                     />
-                  </td>
-                  <td>
-                    <Button variant="warning" size="sm" className="me-2" onClick={() => handleEdit(item)}>
-                      <PencilSquare />
-                    </Button>
-                    <Button variant="danger" size="sm" onClick={() => deleteMenu(item.id_menu)}>
-                      <Trash />
-                    </Button>
-                  </td>
-                </tr>
+                  </div>
+                  
+                  <div className="p-4">
+                    <div className="flex items-center justify-between mb-2">
+                      <h3 className="font-semibold text-gray-800 truncate">{item.nama_menu}</h3>
+                      <span className={`px-2 py-1 text-xs rounded-full ${
+                        item.kategori === 'makanan' 
+                          ? 'bg-orange-100 text-orange-800' 
+                          : 'bg-blue-100 text-blue-800'
+                      }`}>
+                        {item.kategori}
+                      </span>
+                    </div>
+                    
+                    <p className="text-gray-600 text-sm mb-3 line-clamp-2">{item.deskripsi}</p>
+                    
+                    <div className="flex items-center justify-between">
+                      <span className="text-lg font-bold text-indigo-600">
+                        Rp {Number(item.harga).toLocaleString('id-ID')}
+                      </span>
+                      
+                      <div className="flex space-x-2">
+                        <button
+                          onClick={() => handleEdit(item)}
+                          className="p-2 text-gray-500 hover:text-orange-600 hover:bg-orange-50 rounded-lg transition-colors"
+                        >
+                          <Edit2 size={16} />
+                        </button>
+                        <button
+                          onClick={() => deleteMenu(item.id_menu)}
+                          className="p-2 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                        >
+                          <Trash2 size={16} />
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               ))
             ) : (
-              <tr>
-                <td colSpan="7" className="text-center">Tidak ada data menu</td>
-              </tr>
+              <div className="col-span-full text-center py-12">
+                <div className="text-gray-400 text-lg mb-2">Tidak ada menu ditemukan</div>
+                <p className="text-gray-500">Coba ubah kata kunci pencarian atau tambah menu baru</p>
+              </div>
             )}
-          </tbody>
-        </Table>
+          </div>
+        </div>
       </div>
 
-      {/* Modal Tambah */}
-      <Modal show={showAddModal} onHide={() => setShowAddModal(false)}>
-        <Modal.Header closeButton>
-          <Modal.Title>Tambah Menu Baru</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <Form>
-            <Form.Group>
-              <Form.Label>Nama Menu</Form.Label>
-              <Form.Control
-                type="text"
-                value={namaMenu}
-                onChange={(e) => setNamaMenu(e.target.value)}
-              />
-            </Form.Group>
-            <Form.Group className="mt-3">
-              <Form.Label>Deskripsi</Form.Label>
-              <Form.Control
-                type="text"
-                value={deskripsi}
-                onChange={(e) => setDeskripsi(e.target.value)}
-              />
-            </Form.Group>
-            <Form.Group className="mt-3">
-              <Form.Label>Kategori</Form.Label>
-              <Form.Select
-                value={kategori}
-                onChange={(e) => setKategori(e.target.value)}
-              >
-                <option value="makanan">Makanan</option>
-                <option value="minuman">Minuman</option>
-              </Form.Select>
-            </Form.Group>
-            <Form.Group className="mt-3">
-              <Form.Label>Harga</Form.Label>
-              <Form.Control
-                type="number"
-                value={harga}
-                onChange={(e) => setHarga(e.target.value)}
-              />
-            </Form.Group>
-            <Form.Group className="mt-3">
-              <Form.Label>Gambar</Form.Label>
-              <Form.Control
-                type="file"
-                onChange={(e) => setFoto(e.target.files[0])}
-              />
-            </Form.Group>
-          </Form>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowAddModal(false)}>Batal</Button>
-          <Button variant="primary" onClick={handleAddMenu}>Simpan</Button>
-        </Modal.Footer>
+      {/* Add Modal */}
+      <Modal
+        show={showAddModal}
+        onClose={() => setShowAddModal(false)}
+        title="Tambah Menu Baru"
+      >
+        <div className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Nama Menu</label>
+            <input
+              type="text"
+              value={namaMenu}
+              onChange={(e) => setNamaMenu(e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+            />
+          </div>
+          
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Deskripsi</label>
+            <textarea
+              value={deskripsi}
+              onChange={(e) => setDeskripsi(e.target.value)}
+              rows={3}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+            />
+          </div>
+          
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Kategori</label>
+            <select
+              value={kategori}
+              onChange={(e) => setKategori(e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+            >
+              <option value="makanan">Makanan</option>
+              <option value="minuman">Minuman</option>
+            </select>
+          </div>
+          
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Harga</label>
+            <input
+              type="number"
+              value={harga}
+              onChange={(e) => setHarga(e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+            />
+          </div>
+          
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Gambar</label>
+            <div className="flex items-center justify-center w-full">
+              <label className="w-full flex flex-col items-center px-4 py-6 bg-gray-50 text-gray-500 rounded-lg border-2 border-gray-300 border-dashed cursor-pointer hover:bg-gray-100">
+                <Upload size={24} className="mb-2" />
+                <span className="text-sm">Pilih gambar</span>
+                <input
+                  type="file"
+                  className="hidden"
+                  onChange={(e) => setFoto(e.target.files[0])}
+                />
+              </label>
+            </div>
+          </div>
+          
+          <div className="flex space-x-3 pt-4">
+            <button
+              onClick={() => setShowAddModal(false)}
+              className="flex-1 px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+            >
+              Batal
+            </button>
+            <button
+              onClick={handleAddMenu}
+              className="flex-1 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
+            >
+              Simpan
+            </button>
+          </div>
+        </div>
       </Modal>
 
-      {/* Modal Edit */}
-      <Modal show={showEditModal} onHide={() => setShowEditModal(false)}>
-        <Modal.Header closeButton>
-          <Modal.Title>Edit Menu</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <Form>
-            <Form.Group>
-              <Form.Label>Nama Menu</Form.Label>
-              <Form.Control
-                type="text"
-                value={editNama}
-                onChange={(e) => setEditNama(e.target.value)}
-              />
-            </Form.Group>
-            <Form.Group className="mt-3">
-              <Form.Label>Deskripsi</Form.Label>
-              <Form.Control
-                type="text"
-                value={editDeskripsi}
-                onChange={(e) => setEditDeskripsi(e.target.value)}
-              />
-            </Form.Group>
-            <Form.Group className="mt-3">
-              <Form.Label>Kategori</Form.Label>
-              <Form.Select
-                value={editKategori}
-                onChange={(e) => setEditKategori(e.target.value)}
-              >
-                <option value="makanan">Makanan</option>
-                <option value="minuman">Minuman</option>
-              </Form.Select>
-            </Form.Group>
-            <Form.Group className="mt-3">
-              <Form.Label>Harga</Form.Label>
-              <Form.Control
-                type="number"
-                value={editHarga}
-                onChange={(e) => setEditHarga(e.target.value)}
-              />
-            </Form.Group>
-            <Form.Group className="mt-3">
-              <Form.Label>Ganti Gambar (opsional)</Form.Label>
-              <Form.Control
-                type="file"
-                onChange={(e) => setEditFoto(e.target.files[0])}
-              />
-            </Form.Group>
-          </Form>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowEditModal(false)}>Batal</Button>
-          <Button variant="success" onClick={handleUpdate}>Simpan Perubahan</Button>
-        </Modal.Footer>
+      {/* Edit Modal */}
+      <Modal
+        show={showEditModal}
+        onClose={() => setShowEditModal(false)}
+        title="Edit Menu"
+      >
+        <div className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Nama Menu</label>
+            <input
+              type="text"
+              value={editNama}
+              onChange={(e) => setEditNama(e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+            />
+          </div>
+          
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Deskripsi</label>
+            <textarea
+              value={editDeskripsi}
+              onChange={(e) => setEditDeskripsi(e.target.value)}
+              rows={3}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+            />
+          </div>
+          
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Kategori</label>
+            <select
+              value={editKategori}
+              onChange={(e) => setEditKategori(e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+            >
+              <option value="makanan">Makanan</option>
+              <option value="minuman">Minuman</option>
+            </select>
+          </div>
+          
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Harga</label>
+            <input
+              type="number"
+              value={editHarga}
+              onChange={(e) => setEditHarga(e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+            />
+          </div>
+          
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Ganti Gambar (opsional)</label>
+            <div className="flex items-center justify-center w-full">
+              <label className="w-full flex flex-col items-center px-4 py-6 bg-gray-50 text-gray-500 rounded-lg border-2 border-gray-300 border-dashed cursor-pointer hover:bg-gray-100">
+                <Upload size={24} className="mb-2" />
+                <span className="text-sm">Pilih gambar baru</span>
+                <input
+                  type="file"
+                  className="hidden"
+                  onChange={(e) => setEditFoto(e.target.files[0])}
+                />
+              </label>
+            </div>
+          </div>
+          
+          <div className="flex space-x-3 pt-4">
+            <button
+              onClick={() => setShowEditModal(false)}
+              className="flex-1 px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+            >
+              Batal
+            </button>
+            <button
+              onClick={handleUpdate}
+              className="flex-1 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+            >
+              Simpan Perubahan
+            </button>
+          </div>
+        </div>
       </Modal>
     </div>
   );
