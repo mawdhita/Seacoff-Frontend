@@ -30,7 +30,7 @@ const MenuPage = () => {
 
   const getMenu = async () => {
     try {
-      const response = await axios.get("https://seacoff-backend.vercel.app/api/menu");
+      const response = await axios.get("https://seacoff-backend.vercel.app/menus");
       setMenu(response.data);
     } catch (error) {
       showToast("Gagal mengambil data menu", "#f44336");
