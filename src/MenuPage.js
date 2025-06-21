@@ -155,7 +155,7 @@ const MenuPage = () => {
             </Link>
           </li>
           <li style={{ marginBottom: "20px", backgroundColor: location.pathname === "/menu" ? "rgba(255, 255, 255, 0.2)" : "transparent", padding: "10px", borderRadius: "8px" }}>
-            <Link to="/menu" style={{ color: "#fff", textDecoration: "none", display: "flex", alignItems: "center" }}>
+            <Link to="/menu-page" style={{ color: "#fff", textDecoration: "none", display: "flex", alignItems: "center" }}>
               🍽️ <span style={{ marginLeft: "10px" }}>Menu</span>
             </Link>
           </li>
