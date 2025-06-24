@@ -16,13 +16,13 @@ const MenuPage = () => {
   const [harga, setHarga] = useState("");
   const [foto, setFoto] = useState(null);
   const [deskripsi, setDeskripsi] = useState("");
-  const [kategori, setKategori] = useState("makanan"); // default kategori
+  const [kategori, setKategori] = useState("makanan");
 
   const [editNama, setEditNama] = useState("");
   const [editHarga, setEditHarga] = useState("");
   const [editFoto, setEditFoto] = useState(null);
   const [editDeskripsi, setEditDeskripsi] = useState("");
-  const [editKategori, setEditKategori] = useState("makanan"); // default kategori
+  const [editKategori, setEditKategori] = useState("makanan");
 
   useEffect(() => {
     getMenu();
@@ -30,7 +30,9 @@ const MenuPage = () => {
 
   const getMenu = async () => {
     try {
-      const response = await axios.get("https://seacoff-backend.vercel.app/api/menu");
+      const response = await axios.get(
+        "https://seacoff-backend.vercel.app/api/menu"
+      );
       setMenu(response.data);
     } catch (error) {
       showToast("Gagal mengambil data menu", "#f44336");
@@ -77,9 +79,13 @@ const MenuPage = () => {
       formData.append("kategori", kategori);
       formData.append("foto_menu", foto);
 
-      await axios.post("https://seacoff-backend.vercel.app/api/menu", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
+      await axios.post(
+        "https://seacoff-backend.vercel.app/api/menu",
+        formData,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+        }
+      );
 
       showToast("Menu berhasil ditambahkan");
       setShowAddModal(false);
@@ -131,7 +137,9 @@ const MenuPage = () => {
     if (!window.confirm("Yakin ingin menghapus menu ini?")) return;
 
     try {
-      await axios.delete(`https://seacoff-backend.vercel.app/api/menu/${id_menu}`);
+      await axios.delete(
+        `https://seacoff-backend.vercel.app/api/menu/${id_menu}`
+      );
       showToast("Menu berhasil dihapus", "#ff9800");
       getMenu();
     } catch (error) {
@@ -154,12 +162,12 @@ const MenuPage = () => {
               📊 <span style={{ marginLeft: "10px" }}>Dashboard</span>
             </Link>
           </li>
-          <li style={{ marginBottom: "20px", backgroundColor: location.pathname === "/menu" ? "rgba(255, 255, 255, 0.2)" : "transparent", padding: "10px", borderRadius: "8px" }}>
+          <li style={{ marginBottom: "20px", backgroundColor: location.pathname === "/menu-page" ? "rgba(255, 255, 255, 0.2)" : "transparent", padding: "10px", borderRadius: "8px" }}>
             <Link to="/menu-page" style={{ color: "#fff", textDecoration: "none", display: "flex", alignItems: "center" }}>
               🍽️ <span style={{ marginLeft: "10px" }}>Menu</span>
             </Link>
           </li>
-          <li style={{ marginBottom: "20px", backgroundColor: location.pathname === "/riwayat-penjualan" ? "rgba(255, 255, 255, 0.2)" : "transparent", padding: "10px", borderRadius: "8px" }}>
+          <li style={{ marginBottom: "20px" }}>
             <Link to="/riwayat-penjualan" style={{ color: "#fff", textDecoration: "none", display: "flex", alignItems: "center" }}>
               📜 <span style={{ marginLeft: "10px" }}>Riwayat</span>
             </Link>
@@ -170,7 +178,6 @@ const MenuPage = () => {
       {/* Main Content */}
       <div style={{ flex: 1, padding: "20px" }}>
         <h1 style={{ fontSize: "28px", marginBottom: "20px" }}>Daftar Menu</h1>
-
         <div className="d-flex justify-content-between align-items-center mb-3">
           <Button variant="primary" onClick={() => setShowAddModal(true)}>
             Tambah Menu Baru
@@ -207,7 +214,7 @@ const MenuPage = () => {
                   <td>Rp {item.harga}</td>
                   <td>
                     <img
-                      src={`https://seacoff-backend.vercel.app/uploads/${item.foto_menu}`}
+                      src={item.foto_menu} // langsung ambil dari Cloudinary
                       alt={item.nama_menu}
                       width="100"
                     />
@@ -256,10 +263,7 @@ const MenuPage = () => {
             </Form.Group>
             <Form.Group className="mt-3">
               <Form.Label>Kategori</Form.Label>
-              <Form.Select
-                value={kategori}
-                onChange={(e) => setKategori(e.target.value)}
-              >
+              <Form.Select value={kategori} onChange={(e) => setKategori(e.target.value)}>
                 <option value="makanan">Makanan</option>
                 <option value="minuman">Minuman</option>
               </Form.Select>
