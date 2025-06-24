@@ -5,6 +5,46 @@ import { PencilSquare, Trash } from "react-bootstrap-icons";
 import { Link, useLocation } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 
+// CSS untuk memastikan modal di tengah
+const modalStyles = `
+  .modal-dialog-centered {
+    display: flex !important;
+    align-items: center !important;
+    min-height: calc(100% - 1rem) !important;
+    margin: 0.5rem auto !important;
+  }
+  
+  .modal-dialog {
+    margin: 0 auto !important;
+    max-width: 500px !important;
+  }
+  
+  .modal {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 0 15px !important;
+  }
+  
+  @media (min-width: 576px) {
+    .modal-dialog {
+      max-width: 500px !important;
+      margin: 1.75rem auto !important;
+    }
+    
+    .modal-dialog-centered {
+      min-height: calc(100% - 3.5rem) !important;
+    }
+  }
+`;
+
+// Inject styles
+if (typeof document !== 'undefined') {
+  const styleElement = document.createElement('style');
+  styleElement.textContent = modalStyles;
+  document.head.appendChild(styleElement);
+}
+
 const MenuPage = () => {
   const location = useLocation();
 
@@ -211,11 +251,10 @@ const MenuPage = () => {
         show={showAddModal}
         onHide={() => setShowAddModal(false)}
         centered
-        size="md"
         backdrop="static"
         keyboard={false}
         dialogClassName="modal-dialog-centered"
-        style={{ zIndex: 1050 }}
+        className="custom-modal"
       >
         <Modal.Header closeButton style={{ borderBottom: "1px solid #dee2e6" }}>
           <Modal.Title>Tambah Menu Baru</Modal.Title>
@@ -282,11 +321,10 @@ const MenuPage = () => {
         show={showEditModal}
         onHide={() => setShowEditModal(false)}
         centered
-        size="md"
         backdrop="static"
         keyboard={false}
         dialogClassName="modal-dialog-centered"
-        style={{ zIndex: 1050 }}
+        className="custom-modal"
       >
         <Modal.Header closeButton style={{ borderBottom: "1px solid #dee2e6" }}>
           <Modal.Title>Edit Menu</Modal.Title>
