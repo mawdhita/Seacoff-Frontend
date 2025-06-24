@@ -3,6 +3,7 @@ import axios from "axios";
 import { Table, Modal, Button, Form } from "react-bootstrap";
 import { PencilSquare, Trash } from "react-bootstrap-icons";
 import { Link, useLocation } from "react-router-dom";
+import "bootstrap/dist/css/bootstrap.min.css"; // Pastikan CSS Bootstrap diimpor!
 
 const MenuPage = () => {
   const location = useLocation();
@@ -52,21 +53,16 @@ const MenuPage = () => {
       borderRadius: "8px",
       zIndex: 9999,
       fontSize: "16px",
-      fontWeight: "500",
       opacity: "0",
       transition: "opacity 0.3s ease",
     });
 
     document.body.appendChild(toast);
-    requestAnimationFrame(() => {
-      toast.style.opacity = "1";
-    });
+    requestAnimationFrame(() => (toast.style.opacity = "1"));
 
     setTimeout(() => {
       toast.style.opacity = "0";
-      setTimeout(() => {
-        document.body.removeChild(toast);
-      }, 300);
+      setTimeout(() => document.body.removeChild(toast), 300);
     }, 3000);
   };
 
@@ -134,9 +130,7 @@ const MenuPage = () => {
   const deleteMenu = async (id_menu) => {
     if (!window.confirm("Yakin ingin menghapus menu ini?")) return;
     try {
-      await axios.delete(
-        `https://seacoff-backend.vercel.app/api/menu/${id_menu}`
-      );
+      await axios.delete(`https://seacoff-backend.vercel.app/api/menu/${id_menu}`);
       showToast("Menu berhasil dihapus", "#ff9800");
       getMenu();
     } catch (error) {
@@ -150,67 +144,20 @@ const MenuPage = () => {
 
   return (
     <>
-      <style>{`
-        .sidebar {
-          width: 240px;
-          background: linear-gradient(to bottom, #4e54c8, #8f94fb);
-          color: #fff;
-          padding: 20px;
-          min-height: 100vh;
-        }
-        .sidebar ul {
-          list-style: none;
-          padding: 0;
-        }
-        .sidebar ul li {
-          margin-bottom: 20px;
-          padding: 10px;
-          border-radius: 8px;
-          cursor: pointer;
-        }
-        .sidebar ul li.active {
-          background: rgba(255, 255, 255, 0.2);
-        }
-        .sidebar ul li a {
-          color: #fff;
-          text-decoration: none;
-          display: flex;
-          align-items: center;
-        }
-        .sidebar ul li a span {
-          margin-left: 10px;
-        }
-        .main-content {
-          flex: 1;
-          padding: 20px;
-          background: #f4f4f4;
-        }
-        .menu-table {
-          background: #fff;
-          border-radius: 8px;
-          overflow: hidden;
-        }
-      `}</style>
-
-      <div style={{ display: "flex" }}>
+      {/* Layout Utama */}
+      <div style={{ display: "flex", minHeight: "100vh", backgroundColor: "#f4f4f4" }}>
         {/* Sidebar */}
-        <div className="sidebar">
+        <div style={{ width: "240px", background: "linear-gradient(to bottom, #4e54c8, #8f94fb)", color: "#fff", padding: "20px" }}>
           <div style={{ fontSize: "30px", fontWeight: "bold", marginBottom: "30px" }}>F.</div>
-          <ul>
-            <li className={location.pathname === "/dashboard" ? "active" : ""}>
-              <Link to="/dashboard">📊 <span>Dashboard</span></Link>
-            </li>
-            <li className={location.pathname === "/menu-page" ? "active" : ""}>
-              <Link to="/menu-page">🍽️ <span>Menu</span></Link>
-            </li>
-            <li className={location.pathname === "/riwayat-penjualan" ? "active" : ""}>
-              <Link to="/riwayat-penjualan">📜 <span>Riwayat</span></Link>
-            </li>
+          <ul style={{ listStyle: "none", padding: 0 }}>
+            <li style={{ marginBottom: "20px" }}><Link to="/dashboard" style={{ color: "#fff", textDecoration: "none" }}>📊 Dashboard</Link></li>
+            <li style={{ marginBottom: "20px", backgroundColor: location.pathname === "/menu-page" ? "rgba(255,255,255,0.2)" : "transparent", padding: "10px", borderRadius: "8px" }}><Link to="/menu-page" style={{ color: "#fff", textDecoration: "none" }}>🍽️ Menu</Link></li>
+            <li style={{ marginBottom: "20px" }}><Link to="/riwayat-penjualan" style={{ color: "#fff", textDecoration: "none" }}>📜 Riwayat</Link></li>
           </ul>
         </div>
 
         {/* Main Content */}
-        <div className="main-content">
+        <div style={{ flex: 1, padding: "20px" }}>
           <h1 style={{ fontSize: "28px", marginBottom: "20px" }}>Daftar Menu</h1>
           <div className="d-flex justify-content-between align-items-center mb-3">
             <Button variant="primary" onClick={() => setShowAddModal(true)}>
@@ -224,8 +171,7 @@ const MenuPage = () => {
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
-
-          <Table striped bordered hover responsive className="menu-table">
+          <Table striped bordered hover responsive style={{ background: "#fff", borderRadius: "8px", overflow: "hidden" }}>
             <thead style={{ background: "#f0f0f0" }}>
               <tr>
                 <th>No</th>
@@ -238,109 +184,60 @@ const MenuPage = () => {
               </tr>
             </thead>
             <tbody>
-              {filteredMenu.length > 0 ? (
-                filteredMenu.map((item, index) => (
-                  <tr key={item.id_menu}>
-                    <td>{index + 1}</td>
-                    <td>{item.nama_menu}</td>
-                    <td>{item.deskripsi}</td>
-                    <td>{item.kategori}</td>
-                    <td>Rp {item.harga}</td>
-                    <td><img src={item.foto_menu} alt={item.nama_menu} width="100" style={{ borderRadius: "4px" }} /></td>
-                    <td>
-                      <Button variant="warning" size="sm" className="me-2" onClick={() => handleEdit(item)}>
-                        <PencilSquare />
-                      </Button>
-                      <Button variant="danger" size="sm" onClick={() => deleteMenu(item.id_menu)}>
-                        <Trash />
-                      </Button>
-                    </td>
-                  </tr>
-                ))
-              ) : (
+              {filteredMenu.length > 0 ? filteredMenu.map((item, index) => (
+                <tr key={item.id_menu}>
+                  <td>{index + 1}</td>
+                  <td>{item.nama_menu}</td>
+                  <td>{item.deskripsi}</td>
+                  <td>{item.kategori}</td>
+                  <td>Rp {item.harga}</td>
+                  <td><img src={item.foto_menu} alt={item.nama_menu} width="100" /></td>
+                  <td>
+                    <Button variant="warning" size="sm" className="me-2" onClick={() => handleEdit(item)}>
+                      <PencilSquare />
+                    </Button>
+                    <Button variant="danger" size="sm" onClick={() => deleteMenu(item.id_menu)}>
+                      <Trash />
+                    </Button>
+                  </td>
+                </tr>
+              )) : (
                 <tr><td colSpan="7" className="text-center">Tidak ada data menu</td></tr>
               )}
             </tbody>
           </Table>
         </div>
-
-        {/* Modal Tambah */}
-        <Modal show={showAddModal} onHide={() => setShowAddModal(false)} centered scrollable>
-          <Modal.Header closeButton>
-            <Modal.Title>Tambah Menu Baru</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <Form>
-              {/* Form untuk tambah menu */}
-              <Form.Group>
-                <Form.Label>Nama Menu</Form.Label>
-                <Form.Control type="text" value={namaMenu} onChange={(e) => setNamaMenu(e.target.value)} />
-              </Form.Group>
-              <Form.Group className="mt-3">
-                <Form.Label>Deskripsi</Form.Label>
-                <Form.Control type="text" value={deskripsi} onChange={(e) => setDeskripsi(e.target.value)} />
-              </Form.Group>
-              <Form.Group className="mt-3">
-                <Form.Label>Kategori</Form.Label>
-                <Form.Select value={kategori} onChange={(e) => setKategori(e.target.value)}>
-                  <option value="makanan">Makanan</option>
-                  <option value="minuman">Minuman</option>
-                </Form.Select>
-              </Form.Group>
-              <Form.Group className="mt-3">
-                <Form.Label>Harga</Form.Label>
-                <Form.Control type="number" value={harga} onChange={(e) => setHarga(e.target.value)} />
-              </Form.Group>
-              <Form.Group className="mt-3">
-                <Form.Label>Gambar</Form.Label>
-                <Form.Control type="file" onChange={(e) => setFoto(e.target.files[0])} />
-              </Form.Group>
-            </Form>
-          </Modal.Body>
-          <Modal.Footer>
-            <Button variant="secondary" onClick={() => setShowAddModal(false)}>Batal</Button>
-            <Button variant="primary" onClick={handleAddMenu}>Simpan</Button>
-          </Modal.Footer>
-        </Modal>
-
-        {/* Modal Edit */}
-        <Modal show={showEditModal} onHide={() => setShowEditModal(false)} centered scrollable>
-          <Modal.Header closeButton>
-            <Modal.Title>Edit Menu</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <Form>
-              <Form.Group>
-                <Form.Label>Nama Menu</Form.Label>
-                <Form.Control type="text" value={editNama} onChange={(e) => setEditNama(e.target.value)} />
-              </Form.Group>
-              <Form.Group className="mt-3">
-                <Form.Label>Deskripsi</Form.Label>
-                <Form.Control type="text" value={editDeskripsi} onChange={(e) => setEditDeskripsi(e.target.value)} />
-              </Form.Group>
-              <Form.Group className="mt-3">
-                <Form.Label>Kategori</Form.Label>
-                <Form.Select value={editKategori} onChange={(e) => setEditKategori(e.target.value)}>
-                  <option value="makanan">Makanan</option>
-                  <option value="minuman">Minuman</option>
-                </Form.Select>
-              </Form.Group>
-              <Form.Group className="mt-3">
-                <Form.Label>Harga</Form.Label>
-                <Form.Control type="number" value={editHarga} onChange={(e) => setEditHarga(e.target.value)} />
-              </Form.Group>
-              <Form.Group className="mt-3">
-                <Form.Label>Ganti Gambar (opsional)</Form.Label>
-                <Form.Control type="file" onChange={(e) => setEditFoto(e.target.files[0])} />
-              </Form.Group>
-            </Form>
-          </Modal.Body>
-          <Modal.Footer>
-            <Button variant="secondary" onClick={() => setShowEditModal(false)}>Batal</Button>
-            <Button variant="success" onClick={handleUpdate}>Simpan Perubahan</Button>
-          </Modal.Footer>
-        </Modal>
       </div>
+
+      {/* Modal Tambah */}
+      <Modal show={showAddModal} onHide={() => setShowAddModal(false)} centered scrollable>
+        <Modal.Header closeButton><Modal.Title>Tambah Menu Baru</Modal.Title></Modal.Header>
+        <Modal.Body>
+          <Form>
+            <Form.Group><Form.Label>Nama Menu</Form.Label><Form.Control value={namaMenu} onChange={(e) => setNamaMenu(e.target.value)} /></Form.Group>
+            <Form.Group className="mt-3"><Form.Label>Deskripsi</Form.Label><Form.Control value={deskripsi} onChange={(e) => setDeskripsi(e.target.value)} /></Form.Group>
+            <Form.Group className="mt-3"><Form.Label>Kategori</Form.Label><Form.Select value={kategori} onChange={(e) => setKategori(e.target.value)}><option value="makanan">Makanan</option><option value="minuman">Minuman</option></Form.Select></Form.Group>
+            <Form.Group className="mt-3"><Form.Label>Harga</Form.Label><Form.Control type="number" value={harga} onChange={(e) => setHarga(e.target.value)} /></Form.Group>
+            <Form.Group className="mt-3"><Form.Label>Gambar</Form.Label><Form.Control type="file" onChange={(e) => setFoto(e.target.files[0])} /></Form.Group>
+          </Form>
+        </Modal.Body>
+        <Modal.Footer><Button variant="secondary" onClick={() => setShowAddModal(false)}>Batal</Button><Button variant="primary" onClick={handleAddMenu}>Simpan</Button></Modal.Footer>
+      </Modal>
+
+      {/* Modal Edit */}
+      <Modal show={showEditModal} onHide={() => setShowEditModal(false)} centered scrollable>
+        <Modal.Header closeButton><Modal.Title>Edit Menu</Modal.Title></Modal.Header>
+        <Modal.Body>
+          <Form>
+            <Form.Group><Form.Label>Nama Menu</Form.Label><Form.Control value={editNama} onChange={(e) => setEditNama(e.target.value)} /></Form.Group>
+            <Form.Group className="mt-3"><Form.Label>Deskripsi</Form.Label><Form.Control value={editDeskripsi} onChange={(e) => setEditDeskripsi(e.target.value)} /></Form.Group>
+            <Form.Group className="mt-3"><Form.Label>Kategori</Form.Label><Form.Select value={editKategori} onChange={(e) => setEditKategori(e.target.value)}><option value="makanan">Makanan</option><option value="minuman">Minuman</option></Form.Select></Form.Group>
+            <Form.Group className="mt-3"><Form.Label>Harga</Form.Label><Form.Control type="number" value={editHarga} onChange={(e) => setEditHarga(e.target.value)} /></Form.Group>
+            <Form.Group className="mt-3"><Form.Label>Ganti Gambar (opsional)</Form.Label><Form.Control type="file" onChange={(e) => setEditFoto(e.target.files[0])} /></Form.Group>
+          </Form>
+        </Modal.Body>
+        <Modal.Footer><Button variant="secondary" onClick={() => setShowEditModal(false)}>Batal</Button><Button variant="success" onClick={handleUpdate}>Simpan Perubahan</Button></Modal.Footer>
+      </Modal>
     </>
   );
 };
