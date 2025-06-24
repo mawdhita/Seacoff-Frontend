@@ -15,7 +15,7 @@ const AddMenu = ({ onSuccess }) => {
     formData.append("foto_menu", gambar);
 
     try {
-     await axios.post("https://seacoff-backend.vercel.app/menus", formData, {
+     await axios.post("https://seacoff-backend.vercel.app/api/menu", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
