@@ -208,46 +208,141 @@ const MenuPage = () => {
 
       {/* Modal Tambah */}
       <Modal
-  show={showAddModal}
-  onHide={() => setShowAddModal(false)}
-  centered
-  size="md"
-  backdrop="static"
-  keyboard={false}
->
-        <Modal.Header closeButton><Modal.Title>Tambah Menu Baru</Modal.Title></Modal.Header>
-        <Modal.Body>
+        show={showAddModal}
+        onHide={() => setShowAddModal(false)}
+        centered
+        size="md"
+        backdrop="static"
+        keyboard={false}
+        dialogClassName="modal-dialog-centered"
+        style={{ zIndex: 1050 }}
+      >
+        <Modal.Header closeButton style={{ borderBottom: "1px solid #dee2e6" }}>
+          <Modal.Title>Tambah Menu Baru</Modal.Title>
+        </Modal.Header>
+        <Modal.Body style={{ padding: "20px" }}>
           <Form>
-            <Form.Group className="mb-3"><Form.Label>Nama Menu</Form.Label><Form.Control value={namaMenu} onChange={(e) => setNamaMenu(e.target.value)} /></Form.Group>
-            <Form.Group className="mb-3"><Form.Label>Deskripsi</Form.Label><Form.Control value={deskripsi} onChange={(e) => setDeskripsi(e.target.value)} /></Form.Group>
-            <Form.Group className="mb-3"><Form.Label>Kategori</Form.Label><Form.Select value={kategori} onChange={(e) => setKategori(e.target.value)}><option value="makanan">Makanan</option><option value="minuman">Minuman</option></Form.Select></Form.Group>
-            <Form.Group className="mb-3"><Form.Label>Harga</Form.Label><Form.Control type="number" value={harga} onChange={(e) => setHarga(e.target.value)} /></Form.Group>
-            <Form.Group className="mb-3"><Form.Label>Gambar</Form.Label><Form.Control type="file" onChange={(e) => setFoto(e.target.files[0])} /></Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label>Nama Menu</Form.Label>
+              <Form.Control 
+                type="text"
+                placeholder="Masukkan nama menu"
+                value={namaMenu} 
+                onChange={(e) => setNamaMenu(e.target.value)} 
+              />
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label>Deskripsi</Form.Label>
+              <Form.Control 
+                as="textarea" 
+                rows={3}
+                placeholder="Masukkan deskripsi menu"
+                value={deskripsi} 
+                onChange={(e) => setDeskripsi(e.target.value)} 
+              />
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label>Kategori</Form.Label>
+              <Form.Select value={kategori} onChange={(e) => setKategori(e.target.value)}>
+                <option value="makanan">Makanan</option>
+                <option value="minuman">Minuman</option>
+              </Form.Select>
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label>Harga</Form.Label>
+              <Form.Control 
+                type="number" 
+                placeholder="Masukkan harga"
+                value={harga} 
+                onChange={(e) => setHarga(e.target.value)} 
+              />
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label>Gambar</Form.Label>
+              <Form.Control 
+                type="file" 
+                accept="image/*"
+                onChange={(e) => setFoto(e.target.files[0])} 
+              />
+            </Form.Group>
           </Form>
         </Modal.Body>
-        <Modal.Footer><Button variant="secondary" onClick={() => setShowAddModal(false)}>Batal</Button><Button variant="primary" onClick={handleAddMenu}>Simpan</Button></Modal.Footer>
+        <Modal.Footer style={{ borderTop: "1px solid #dee2e6", padding: "15px 20px" }}>
+          <Button variant="secondary" onClick={() => setShowAddModal(false)}>
+            Batal
+          </Button>
+          <Button variant="primary" onClick={handleAddMenu}>
+            Simpan
+          </Button>
+        </Modal.Footer>
       </Modal>
 
       {/* Modal Edit */}
       <Modal
-  show={showEditModal}
-  onHide={() => setShowEditModal(false)}
-  centered
-  size="md"
-  backdrop="static"
-  keyboard={false}
->
-        <Modal.Header closeButton><Modal.Title>Edit Menu</Modal.Title></Modal.Header>
-        <Modal.Body>
+        show={showEditModal}
+        onHide={() => setShowEditModal(false)}
+        centered
+        size="md"
+        backdrop="static"
+        keyboard={false}
+        dialogClassName="modal-dialog-centered"
+        style={{ zIndex: 1050 }}
+      >
+        <Modal.Header closeButton style={{ borderBottom: "1px solid #dee2e6" }}>
+          <Modal.Title>Edit Menu</Modal.Title>
+        </Modal.Header>
+        <Modal.Body style={{ padding: "20px" }}>
           <Form>
-            <Form.Group className="mb-3"><Form.Label>Nama Menu</Form.Label><Form.Control value={editNama} onChange={(e) => setEditNama(e.target.value)} /></Form.Group>
-            <Form.Group className="mb-3"><Form.Label>Deskripsi</Form.Label><Form.Control value={editDeskripsi} onChange={(e) => setEditDeskripsi(e.target.value)} /></Form.Group>
-            <Form.Group className="mb-3"><Form.Label>Kategori</Form.Label><Form.Select value={editKategori} onChange={(e) => setEditKategori(e.target.value)}><option value="makanan">Makanan</option><option value="minuman">Minuman</option></Form.Select></Form.Group>
-            <Form.Group className="mb-3"><Form.Label>Harga</Form.Label><Form.Control type="number" value={editHarga} onChange={(e) => setEditHarga(e.target.value)} /></Form.Group>
-            <Form.Group className="mb-3"><Form.Label>Ganti Gambar (opsional)</Form.Label><Form.Control type="file" onChange={(e) => setEditFoto(e.target.files[0])} /></Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label>Nama Menu</Form.Label>
+              <Form.Control 
+                type="text"
+                value={editNama} 
+                onChange={(e) => setEditNama(e.target.value)} 
+              />
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label>Deskripsi</Form.Label>
+              <Form.Control 
+                as="textarea" 
+                rows={3}
+                value={editDeskripsi} 
+                onChange={(e) => setEditDeskripsi(e.target.value)} 
+              />
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label>Kategori</Form.Label>
+              <Form.Select value={editKategori} onChange={(e) => setEditKategori(e.target.value)}>
+                <option value="makanan">Makanan</option>
+                <option value="minuman">Minuman</option>
+              </Form.Select>
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label>Harga</Form.Label>
+              <Form.Control 
+                type="number" 
+                value={editHarga} 
+                onChange={(e) => setEditHarga(e.target.value)} 
+              />
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label>Ganti Gambar (opsional)</Form.Label>
+              <Form.Control 
+                type="file" 
+                accept="image/*"
+                onChange={(e) => setEditFoto(e.target.files[0])} 
+              />
+            </Form.Group>
           </Form>
         </Modal.Body>
-        <Modal.Footer><Button variant="secondary" onClick={() => setShowEditModal(false)}>Batal</Button><Button variant="success" onClick={handleUpdate}>Simpan Perubahan</Button></Modal.Footer>
+        <Modal.Footer style={{ borderTop: "1px solid #dee2e6", padding: "15px 20px" }}>
+          <Button variant="secondary" onClick={() => setShowEditModal(false)}>
+            Batal
+          </Button>
+          <Button variant="success" onClick={handleUpdate}>
+            Simpan Perubahan
+          </Button>
+        </Modal.Footer>
       </Modal>
     </>
   );
