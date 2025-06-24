@@ -3,22 +3,27 @@ import axios from "axios";
 import { Table, Modal, Button, Form } from "react-bootstrap";
 import { PencilSquare, Trash } from "react-bootstrap-icons";
 import { Link, useLocation } from "react-router-dom";
-import "bootstrap/dist/css/bootstrap.min.css"; // Pastikan CSS Bootstrap diimpor!
+import "bootstrap/dist/css/bootstrap.min.css";
 
 const MenuPage = () => {
   const location = useLocation();
+
   const [menu, setMenu] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
+
+  // Modal State
   const [showAddModal, setShowAddModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
-  const [selectedMenu, setSelectedMenu] = useState(null);
 
+  // Field untuk tambah
   const [namaMenu, setNamaMenu] = useState("");
   const [harga, setHarga] = useState("");
   const [foto, setFoto] = useState(null);
   const [deskripsi, setDeskripsi] = useState("");
   const [kategori, setKategori] = useState("makanan");
 
+  // Field untuk edit
+  const [selectedMenu, setSelectedMenu] = useState(null);
   const [editNama, setEditNama] = useState("");
   const [editHarga, setEditHarga] = useState("");
   const [editFoto, setEditFoto] = useState(null);
@@ -35,7 +40,7 @@ const MenuPage = () => {
         "https://seacoff-backend.vercel.app/api/menu"
       );
       setMenu(response.data);
-    } catch (error) {
+    } catch {
       showToast("Gagal mengambil data menu", "#f44336");
     }
   };
@@ -77,8 +82,7 @@ const MenuPage = () => {
 
       await axios.post(
         "https://seacoff-backend.vercel.app/api/menu",
-        formData,
-        { headers: { "Content-Type": "multipart/form-data" } }
+        formData
       );
 
       showToast("Menu berhasil ditambahkan");
@@ -89,7 +93,7 @@ const MenuPage = () => {
       setKategori("makanan");
       setFoto(null);
       getMenu();
-    } catch (error) {
+    } catch {
       showToast("Gagal menambahkan menu", "#f44336");
     }
   };
@@ -115,14 +119,13 @@ const MenuPage = () => {
 
       await axios.put(
         `https://seacoff-backend.vercel.app/api/menu/${selectedMenu.id_menu}`,
-        formData,
-        { headers: { "Content-Type": "multipart/form-data" } }
+        formData
       );
 
       showToast("Menu berhasil diupdate");
       setShowEditModal(false);
       getMenu();
-    } catch (error) {
+    } catch {
       showToast("Gagal update menu", "#f44336");
     }
   };
@@ -130,10 +133,12 @@ const MenuPage = () => {
   const deleteMenu = async (id_menu) => {
     if (!window.confirm("Yakin ingin menghapus menu ini?")) return;
     try {
-      await axios.delete(`https://seacoff-backend.vercel.app/api/menu/${id_menu}`);
+      await axios.delete(
+        `https://seacoff-backend.vercel.app/api/menu/${id_menu}`
+      );
       showToast("Menu berhasil dihapus", "#ff9800");
       getMenu();
-    } catch (error) {
+    } catch {
       showToast("Gagal menghapus menu", "#f44336");
     }
   };
@@ -144,19 +149,18 @@ const MenuPage = () => {
 
   return (
     <>
-      {/* Layout Utama */}
       <div style={{ display: "flex", minHeight: "100vh", backgroundColor: "#f4f4f4" }}>
         {/* Sidebar */}
         <div style={{ width: "240px", background: "linear-gradient(to bottom, #4e54c8, #8f94fb)", color: "#fff", padding: "20px" }}>
           <div style={{ fontSize: "30px", fontWeight: "bold", marginBottom: "30px" }}>F.</div>
           <ul style={{ listStyle: "none", padding: 0 }}>
-            <li style={{ marginBottom: "20px" }}><Link to="/dashboard" style={{ color: "#fff", textDecoration: "none" }}>📊 Dashboard</Link></li>
-            <li style={{ marginBottom: "20px", backgroundColor: location.pathname === "/menu-page" ? "rgba(255,255,255,0.2)" : "transparent", padding: "10px", borderRadius: "8px" }}><Link to="/menu-page" style={{ color: "#fff", textDecoration: "none" }}>🍽️ Menu</Link></li>
-            <li style={{ marginBottom: "20px" }}><Link to="/riwayat-penjualan" style={{ color: "#fff", textDecoration: "none" }}>📜 Riwayat</Link></li>
+            <li style={{ marginBottom: "20px" }}><Link to="/dashboard" style={{ color: "#fff" }}>📊 Dashboard</Link></li>
+            <li style={{ marginBottom: "20px", backgroundColor: location.pathname === "/menu-page" ? "rgba(255, 255, 255, 0.2)" : "transparent", padding: "10px", borderRadius: "8px" }}><Link to="/menu-page" style={{ color: "#fff" }}>🍽️ Menu</Link></li>
+            <li style={{ marginBottom: "20px" }}><Link to="/riwayat-penjualan" style={{ color: "#fff" }}>📜 Riwayat</Link></li>
           </ul>
         </div>
 
-        {/* Main Content */}
+        {/* Konten utama */}
         <div style={{ flex: 1, padding: "20px" }}>
           <h1 style={{ fontSize: "28px", marginBottom: "20px" }}>Daftar Menu</h1>
           <div className="d-flex justify-content-between align-items-center mb-3">
@@ -171,37 +175,30 @@ const MenuPage = () => {
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
-          <Table striped bordered hover responsive style={{ background: "#fff", borderRadius: "8px", overflow: "hidden" }}>
+
+          <Table striped bordered hover responsive>
             <thead style={{ background: "#f0f0f0" }}>
               <tr>
-                <th>No</th>
-                <th>Nama Menu</th>
-                <th>Deskripsi</th>
-                <th>Kategori</th>
-                <th>Harga</th>
-                <th>Gambar</th>
-                <th>Aksi</th>
+                <th>No</th><th>Nama Menu</th><th>Deskripsi</th><th>Kategori</th><th>Harga</th><th>Gambar</th><th>Aksi</th>
               </tr>
             </thead>
             <tbody>
-              {filteredMenu.length > 0 ? filteredMenu.map((item, index) => (
-                <tr key={item.id_menu}>
-                  <td>{index + 1}</td>
-                  <td>{item.nama_menu}</td>
-                  <td>{item.deskripsi}</td>
-                  <td>{item.kategori}</td>
-                  <td>Rp {item.harga}</td>
-                  <td><img src={item.foto_menu} alt={item.nama_menu} width="100" /></td>
-                  <td>
-                    <Button variant="warning" size="sm" className="me-2" onClick={() => handleEdit(item)}>
-                      <PencilSquare />
-                    </Button>
-                    <Button variant="danger" size="sm" onClick={() => deleteMenu(item.id_menu)}>
-                      <Trash />
-                    </Button>
-                  </td>
-                </tr>
-              )) : (
+              {filteredMenu.length ? (
+                filteredMenu.map((item, index) => (
+                  <tr key={item.id_menu}>
+                    <td>{index + 1}</td>
+                    <td>{item.nama_menu}</td>
+                    <td>{item.deskripsi}</td>
+                    <td>{item.kategori}</td>
+                    <td>Rp {item.harga}</td>
+                    <td><img src={item.foto_menu} alt={item.nama_menu} width="100" /></td>
+                    <td>
+                      <Button variant="warning" size="sm" onClick={() => handleEdit(item)}><PencilSquare /></Button>{" "}
+                      <Button variant="danger" size="sm" onClick={() => deleteMenu(item.id_menu)}><Trash /></Button>
+                    </td>
+                  </tr>
+                ))
+              ) : (
                 <tr><td colSpan="7" className="text-center">Tidak ada data menu</td></tr>
               )}
             </tbody>
@@ -210,30 +207,30 @@ const MenuPage = () => {
       </div>
 
       {/* Modal Tambah */}
-      <Modal show={showAddModal} onHide={() => setShowAddModal(false)} centered scrollable>
+      <Modal show={showAddModal} onHide={() => setShowAddModal(false)} centered>
         <Modal.Header closeButton><Modal.Title>Tambah Menu Baru</Modal.Title></Modal.Header>
         <Modal.Body>
           <Form>
-            <Form.Group><Form.Label>Nama Menu</Form.Label><Form.Control value={namaMenu} onChange={(e) => setNamaMenu(e.target.value)} /></Form.Group>
-            <Form.Group className="mt-3"><Form.Label>Deskripsi</Form.Label><Form.Control value={deskripsi} onChange={(e) => setDeskripsi(e.target.value)} /></Form.Group>
-            <Form.Group className="mt-3"><Form.Label>Kategori</Form.Label><Form.Select value={kategori} onChange={(e) => setKategori(e.target.value)}><option value="makanan">Makanan</option><option value="minuman">Minuman</option></Form.Select></Form.Group>
-            <Form.Group className="mt-3"><Form.Label>Harga</Form.Label><Form.Control type="number" value={harga} onChange={(e) => setHarga(e.target.value)} /></Form.Group>
-            <Form.Group className="mt-3"><Form.Label>Gambar</Form.Label><Form.Control type="file" onChange={(e) => setFoto(e.target.files[0])} /></Form.Group>
+            <Form.Group className="mb-3"><Form.Label>Nama Menu</Form.Label><Form.Control value={namaMenu} onChange={(e) => setNamaMenu(e.target.value)} /></Form.Group>
+            <Form.Group className="mb-3"><Form.Label>Deskripsi</Form.Label><Form.Control value={deskripsi} onChange={(e) => setDeskripsi(e.target.value)} /></Form.Group>
+            <Form.Group className="mb-3"><Form.Label>Kategori</Form.Label><Form.Select value={kategori} onChange={(e) => setKategori(e.target.value)}><option value="makanan">Makanan</option><option value="minuman">Minuman</option></Form.Select></Form.Group>
+            <Form.Group className="mb-3"><Form.Label>Harga</Form.Label><Form.Control type="number" value={harga} onChange={(e) => setHarga(e.target.value)} /></Form.Group>
+            <Form.Group className="mb-3"><Form.Label>Gambar</Form.Label><Form.Control type="file" onChange={(e) => setFoto(e.target.files[0])} /></Form.Group>
           </Form>
         </Modal.Body>
         <Modal.Footer><Button variant="secondary" onClick={() => setShowAddModal(false)}>Batal</Button><Button variant="primary" onClick={handleAddMenu}>Simpan</Button></Modal.Footer>
       </Modal>
 
       {/* Modal Edit */}
-      <Modal show={showEditModal} onHide={() => setShowEditModal(false)} centered scrollable>
+      <Modal show={showEditModal} onHide={() => setShowEditModal(false)} centered>
         <Modal.Header closeButton><Modal.Title>Edit Menu</Modal.Title></Modal.Header>
         <Modal.Body>
           <Form>
-            <Form.Group><Form.Label>Nama Menu</Form.Label><Form.Control value={editNama} onChange={(e) => setEditNama(e.target.value)} /></Form.Group>
-            <Form.Group className="mt-3"><Form.Label>Deskripsi</Form.Label><Form.Control value={editDeskripsi} onChange={(e) => setEditDeskripsi(e.target.value)} /></Form.Group>
-            <Form.Group className="mt-3"><Form.Label>Kategori</Form.Label><Form.Select value={editKategori} onChange={(e) => setEditKategori(e.target.value)}><option value="makanan">Makanan</option><option value="minuman">Minuman</option></Form.Select></Form.Group>
-            <Form.Group className="mt-3"><Form.Label>Harga</Form.Label><Form.Control type="number" value={editHarga} onChange={(e) => setEditHarga(e.target.value)} /></Form.Group>
-            <Form.Group className="mt-3"><Form.Label>Ganti Gambar (opsional)</Form.Label><Form.Control type="file" onChange={(e) => setEditFoto(e.target.files[0])} /></Form.Group>
+            <Form.Group className="mb-3"><Form.Label>Nama Menu</Form.Label><Form.Control value={editNama} onChange={(e) => setEditNama(e.target.value)} /></Form.Group>
+            <Form.Group className="mb-3"><Form.Label>Deskripsi</Form.Label><Form.Control value={editDeskripsi} onChange={(e) => setEditDeskripsi(e.target.value)} /></Form.Group>
+            <Form.Group className="mb-3"><Form.Label>Kategori</Form.Label><Form.Select value={editKategori} onChange={(e) => setEditKategori(e.target.value)}><option value="makanan">Makanan</option><option value="minuman">Minuman</option></Form.Select></Form.Group>
+            <Form.Group className="mb-3"><Form.Label>Harga</Form.Label><Form.Control type="number" value={editHarga} onChange={(e) => setEditHarga(e.target.value)} /></Form.Group>
+            <Form.Group className="mb-3"><Form.Label>Ganti Gambar (opsional)</Form.Label><Form.Control type="file" onChange={(e) => setEditFoto(e.target.files[0])} /></Form.Group>
           </Form>
         </Modal.Body>
         <Modal.Footer><Button variant="secondary" onClick={() => setShowEditModal(false)}>Batal</Button><Button variant="success" onClick={handleUpdate}>Simpan Perubahan</Button></Modal.Footer>
