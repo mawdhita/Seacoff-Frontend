@@ -82,9 +82,7 @@ const MenuPage = () => {
       await axios.post(
         "https://seacoff-backend.vercel.app/api/menu",
         formData,
-        {
-          headers: { "Content-Type": "multipart/form-data" },
-        }
+        { headers: { "Content-Type": "multipart/form-data" } }
       );
 
       showToast("Menu berhasil ditambahkan");
@@ -135,11 +133,8 @@ const MenuPage = () => {
 
   const deleteMenu = async (id_menu) => {
     if (!window.confirm("Yakin ingin menghapus menu ini?")) return;
-
     try {
-      await axios.delete(
-        `https://seacoff-backend.vercel.app/api/menu/${id_menu}`
-      );
+      await axios.delete(`https://seacoff-backend.vercel.app/api/menu/${id_menu}`);
       showToast("Menu berhasil dihapus", "#ff9800");
       getMenu();
     } catch (error) {
@@ -158,19 +153,13 @@ const MenuPage = () => {
         <div style={{ fontSize: "30px", fontWeight: "bold", marginBottom: "30px" }}>F.</div>
         <ul style={{ listStyle: "none", padding: 0 }}>
           <li style={{ marginBottom: "20px" }}>
-            <Link to="/dashboard" style={{ color: "#fff", textDecoration: "none", display: "flex", alignItems: "center" }}>
-              📊 <span style={{ marginLeft: "10px" }}>Dashboard</span>
-            </Link>
+            <Link to="/dashboard" style={{ color: "#fff", textDecoration: "none", display: "flex", alignItems: "center" }}>📊 <span style={{ marginLeft: "10px" }}>Dashboard</span></Link>
           </li>
           <li style={{ marginBottom: "20px", backgroundColor: location.pathname === "/menu-page" ? "rgba(255, 255, 255, 0.2)" : "transparent", padding: "10px", borderRadius: "8px" }}>
-            <Link to="/menu-page" style={{ color: "#fff", textDecoration: "none", display: "flex", alignItems: "center" }}>
-              🍽️ <span style={{ marginLeft: "10px" }}>Menu</span>
-            </Link>
+            <Link to="/menu-page" style={{ color: "#fff", textDecoration: "none", display: "flex", alignItems: "center" }}>🍽️ <span style={{ marginLeft: "10px" }}>Menu</span></Link>
           </li>
           <li style={{ marginBottom: "20px" }}>
-            <Link to="/riwayat-penjualan" style={{ color: "#fff", textDecoration: "none", display: "flex", alignItems: "center" }}>
-              📜 <span style={{ marginLeft: "10px" }}>Riwayat</span>
-            </Link>
+            <Link to="/riwayat-penjualan" style={{ color: "#fff", textDecoration: "none", display: "flex", alignItems: "center" }}>📜 <span style={{ marginLeft: "10px" }}>Riwayat</span></Link>
           </li>
         </ul>
       </div>
@@ -179,9 +168,7 @@ const MenuPage = () => {
       <div style={{ flex: 1, padding: "20px" }}>
         <h1 style={{ fontSize: "28px", marginBottom: "20px" }}>Daftar Menu</h1>
         <div className="d-flex justify-content-between align-items-center mb-3">
-          <Button variant="primary" onClick={() => setShowAddModal(true)}>
-            Tambah Menu Baru
-          </Button>
+          <Button variant="primary" onClick={() => setShowAddModal(true)}>Tambah Menu Baru</Button>
           <Form.Control
             type="text"
             placeholder="Cari menu..."
@@ -212,13 +199,7 @@ const MenuPage = () => {
                   <td>{item.deskripsi}</td>
                   <td>{item.kategori}</td>
                   <td>Rp {item.harga}</td>
-                  <td>
-                    <img
-                      src={item.foto_menu} // langsung ambil dari Cloudinary
-                      alt={item.nama_menu}
-                      width="100"
-                    />
-                  </td>
+                  <td><img src={item.foto_menu} alt={item.nama_menu} width="100" /></td>
                   <td>
                     <Button variant="warning" size="sm" className="me-2" onClick={() => handleEdit(item)}>
                       <PencilSquare />
@@ -239,7 +220,7 @@ const MenuPage = () => {
       </div>
 
       {/* Modal Tambah */}
-      <Modal show={showAddModal} onHide={() => setShowAddModal(false)}>
+      <Modal show={showAddModal} onHide={() => setShowAddModal(false)} centered scrollable>
         <Modal.Header closeButton>
           <Modal.Title>Tambah Menu Baru</Modal.Title>
         </Modal.Header>
@@ -292,7 +273,7 @@ const MenuPage = () => {
       </Modal>
 
       {/* Modal Edit */}
-      <Modal show={showEditModal} onHide={() => setShowEditModal(false)}>
+      <Modal show={showEditModal} onHide={() => setShowEditModal(false)} centered scrollable>
         <Modal.Header closeButton>
           <Modal.Title>Edit Menu</Modal.Title>
         </Modal.Header>
@@ -316,10 +297,7 @@ const MenuPage = () => {
             </Form.Group>
             <Form.Group className="mt-3">
               <Form.Label>Kategori</Form.Label>
-              <Form.Select
-                value={editKategori}
-                onChange={(e) => setEditKategori(e.target.value)}
-              >
+              <Form.Select value={editKategori} onChange={(e) => setEditKategori(e.target.value)}>
                 <option value="makanan">Makanan</option>
                 <option value="minuman">Minuman</option>
               </Form.Select>
