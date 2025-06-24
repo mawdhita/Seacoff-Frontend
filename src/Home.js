@@ -139,10 +139,7 @@ const Home = () => {
           {filteredCoffees.length > 0 ? (
             filteredCoffees.map((coffee, idx) => (
               <div key={idx} className="coffee-card">
-               <img 
-                  src={`https://seacoff-backend.vercel.app/uploads/${coffee.foto_menu}`} 
-                  alt={coffee.nama_menu} 
-                />
+               <img src={coffee.foto_menu} alt={coffee.nama_menu} />
 
                 <h3>{coffee.nama_menu}</h3>
                 <p>Rp {coffee.harga}</p>

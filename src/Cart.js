@@ -3,8 +3,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import './App.css';
 
-const BASE_URL = 'https://seacoff-backend.vercel.app/api'; 
-const RAW_URL = 'https://seacoff-backend.vercel.app/uploads'; 
+const BASE_URL = 'https://seacoff-backend.vercel.app/api';
 
 const Cart = () => {
   const [cartItems, setCartItems] = useState([]);
@@ -63,19 +62,13 @@ const Cart = () => {
   const handleCheckout = () => {
     localStorage.setItem('checkoutItems', JSON.stringify(cartItems));
     localStorage.setItem('checkoutTotalPrice', totalPrice);
-    navigate('/checkout', {
-      state: { items: cartItems, totalPrice }
-    });
+    navigate('/checkout', { state: { items: cartItems, totalPrice } });
   };
 
   if (cartItems.length === 0) {
     return (
       <div className="cart-container">
-        <button
-          className="back-icon"
-          onClick={() => navigate(-1)}
-          aria-label="Kembali"
-        >
+        <button className="back-icon" onClick={() => navigate(-1)} aria-label="Kembali">
           ←
         </button>
         <h2>Keranjang Belanja</h2>
@@ -84,30 +77,19 @@ const Cart = () => {
     );
   }
 
-  const getImageUrl = (foto_menu) => {
-    if (!foto_menu || foto_menu.trim() === '') {
-      return 'https://via.placeholder.com/150?text=No+Image';
-    }
-    return `${RAW_URL}/${foto_menu}`;
-  };
-
   return (
     <div className="cart-container">
-      <button
-        className="back-icon"
-        onClick={() => navigate(-1)}
-        aria-label="Kembali"
-      >
+      <button className="back-icon" onClick={() => navigate(-1)} aria-label="Kembali">
         ←
       </button>
 
       <h2>Keranjang Belanja</h2>
 
       <ul className="cart-items">
-        {cartItems.map(item => (
+        {cartItems.map((item) => (
           <li key={item.id_cart} className="cart-item">
             <img
-              src={getImageUrl(item.foto_menu)}
+              src={item.foto_menu} // Langsung gunakan URL Cloudinary
               alt={item.nama_menu}
               className="cart-item-img"
               onError={(e) => {
@@ -118,27 +100,13 @@ const Cart = () => {
             <div className="cart-item-info">
               <h3>{item.nama_menu}</h3>
               <div className="quantity-control">
-                <button
-                  onClick={() => handleDecrease(item.id_cart, item.quantity)}
-                  aria-label={`Kurangi jumlah ${item.nama_menu}`}
-                >
-                  -
-                </button>
+                <button onClick={() => handleDecrease(item.id_cart, item.quantity)}>-</button>
                 <span>{item.quantity}</span>
-                <button
-                  onClick={() => handleIncrease(item.id_cart, item.quantity)}
-                  aria-label={`Tambah jumlah ${item.nama_menu}`}
-                >
-                  +
-                </button>
+                <button onClick={() => handleIncrease(item.id_cart, item.quantity)}>+</button>
               </div>
               <p>Harga: Rp {item.harga.toLocaleString()}</p>
               <p>Total: Rp {(item.quantity * item.harga).toLocaleString()}</p>
-              <button
-                className="remove-button"
-                onClick={() => handleRemove(item.id_cart)}
-                aria-label={`Hapus ${item.nama_menu} dari keranjang`}
-              >
+              <button className="remove-button" onClick={() => handleRemove(item.id_cart)}>
                 Hapus
               </button>
             </div>
@@ -150,9 +118,7 @@ const Cart = () => {
         <h3>Total Harga: Rp {totalPrice.toLocaleString()}</h3>
       </div>
 
-      <button className="checkout-button" onClick={handleCheckout}>
-        Checkout
-      </button>
+      <button className="checkout-button" onClick={handleCheckout}>Checkout</button>
     </div>
   );
 };
