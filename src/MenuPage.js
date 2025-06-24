@@ -3,22 +3,26 @@ import axios from "axios";
 import { Table, Modal, Button, Form } from "react-bootstrap";
 import { PencilSquare, Trash } from "react-bootstrap-icons";
 import { Link, useLocation } from "react-router-dom";
-import AddMenu from "./AddMenu"; // Import komponen AddMenu
 
 const MenuPage = () => {
   const location = useLocation();
   const [menu, setMenu] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
-
-  const [showAddModal, setShowAddModal] = useState(false); // Modal tambah menu
-  const [showEditModal, setShowEditModal] = useState(false); // Modal edit menu
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
   const [selectedMenu, setSelectedMenu] = useState(null);
+
+  const [namaMenu, setNamaMenu] = useState("");
+  const [harga, setHarga] = useState("");
+  const [foto, setFoto] = useState(null);
+  const [deskripsi, setDeskripsi] = useState("");
+  const [kategori, setKategori] = useState("makanan"); // default kategori
 
   const [editNama, setEditNama] = useState("");
   const [editHarga, setEditHarga] = useState("");
   const [editFoto, setEditFoto] = useState(null);
   const [editDeskripsi, setEditDeskripsi] = useState("");
-  const [editKategori, setEditKategori] = useState("makanan");
+  const [editKategori, setEditKategori] = useState("makanan"); // default kategori
 
   useEffect(() => {
     getMenu();
@@ -26,9 +30,7 @@ const MenuPage = () => {
 
   const getMenu = async () => {
     try {
-      const response = await axios.get(
-        "https://seacoff-backend.vercel.app/api/menu"
-      );
+      const response = await axios.get("https://seacoff-backend.vercel.app/api/menu");
       setMenu(response.data);
     } catch (error) {
       showToast("Gagal mengambil data menu", "#f44336");
@@ -54,7 +56,9 @@ const MenuPage = () => {
     });
 
     document.body.appendChild(toast);
-    requestAnimationFrame(() => (toast.style.opacity = "1"));
+    requestAnimationFrame(() => {
+      toast.style.opacity = "1";
+    });
 
     setTimeout(() => {
       toast.style.opacity = "0";
@@ -62,6 +66,32 @@ const MenuPage = () => {
         document.body.removeChild(toast);
       }, 300);
     }, 3000);
+  };
+
+  const handleAddMenu = async () => {
+    try {
+      const formData = new FormData();
+      formData.append("nama_menu", namaMenu);
+      formData.append("harga", harga);
+      formData.append("deskripsi", deskripsi);
+      formData.append("kategori", kategori);
+      formData.append("foto_menu", foto);
+
+      await axios.post("https://seacoff-backend.vercel.app/api/menu", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+
+      showToast("Menu berhasil ditambahkan");
+      setShowAddModal(false);
+      setNamaMenu("");
+      setHarga("");
+      setDeskripsi("");
+      setKategori("makanan");
+      setFoto(null);
+      getMenu();
+    } catch (error) {
+      showToast("Gagal menambahkan menu", "#f44336");
+    }
   };
 
   const handleEdit = (menuItem) => {
@@ -99,10 +129,9 @@ const MenuPage = () => {
 
   const deleteMenu = async (id_menu) => {
     if (!window.confirm("Yakin ingin menghapus menu ini?")) return;
+
     try {
-      await axios.delete(
-        `https://seacoff-backend.vercel.app/api/menu/${id_menu}`
-      );
+      await axios.delete(`https://seacoff-backend.vercel.app/api/menu/${id_menu}`);
       showToast("Menu berhasil dihapus", "#ff9800");
       getMenu();
     } catch (error) {
@@ -117,14 +146,7 @@ const MenuPage = () => {
   return (
     <div style={{ display: "flex", minHeight: "100vh", backgroundColor: "#f4f4f4" }}>
       {/* Sidebar */}
-      <div
-        style={{
-          width: "240px",
-          background: "linear-gradient(to bottom, #4e54c8, #8f94fb)",
-          color: "#fff",
-          padding: "20px",
-        }}
-      >
+      <div style={{ width: "240px", background: "linear-gradient(to bottom, #4e54c8, #8f94fb)", color: "#fff", padding: "20px" }}>
         <div style={{ fontSize: "30px", fontWeight: "bold", marginBottom: "30px" }}>F.</div>
         <ul style={{ listStyle: "none", padding: 0 }}>
           <li style={{ marginBottom: "20px" }}>
@@ -132,7 +154,7 @@ const MenuPage = () => {
               📊 <span style={{ marginLeft: "10px" }}>Dashboard</span>
             </Link>
           </li>
-          <li style={{ marginBottom: "20px", backgroundColor: location.pathname === "/menu-page" ? "rgba(255, 255, 255, 0.2)" : "transparent", padding: "10px", borderRadius: "8px" }}>
+          <li style={{ marginBottom: "20px", backgroundColor: location.pathname === "/menu" ? "rgba(255, 255, 255, 0.2)" : "transparent", padding: "10px", borderRadius: "8px" }}>
             <Link to="/menu-page" style={{ color: "#fff", textDecoration: "none", display: "flex", alignItems: "center" }}>
               🍽️ <span style={{ marginLeft: "10px" }}>Menu</span>
             </Link>
@@ -148,6 +170,7 @@ const MenuPage = () => {
       {/* Main Content */}
       <div style={{ flex: 1, padding: "20px" }}>
         <h1 style={{ fontSize: "28px", marginBottom: "20px" }}>Daftar Menu</h1>
+
         <div className="d-flex justify-content-between align-items-center mb-3">
           <Button variant="primary" onClick={() => setShowAddModal(true)}>
             Tambah Menu Baru
@@ -208,8 +231,61 @@ const MenuPage = () => {
         </Table>
       </div>
 
-      {/* Modal tambah menu baru */}
-      <AddMenu show={showAddModal} onClose={() => setShowAddModal(false)} onMenuAdded={getMenu} />
+      {/* Modal Tambah */}
+      <Modal show={showAddModal} onHide={() => setShowAddModal(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Tambah Menu Baru</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form>
+            <Form.Group>
+              <Form.Label>Nama Menu</Form.Label>
+              <Form.Control
+                type="text"
+                value={namaMenu}
+                onChange={(e) => setNamaMenu(e.target.value)}
+              />
+            </Form.Group>
+            <Form.Group className="mt-3">
+              <Form.Label>Deskripsi</Form.Label>
+              <Form.Control
+                type="text"
+                value={deskripsi}
+                onChange={(e) => setDeskripsi(e.target.value)}
+              />
+            </Form.Group>
+            <Form.Group className="mt-3">
+              <Form.Label>Kategori</Form.Label>
+              <Form.Select
+                value={kategori}
+                onChange={(e) => setKategori(e.target.value)}
+              >
+                <option value="makanan">Makanan</option>
+                <option value="minuman">Minuman</option>
+              </Form.Select>
+            </Form.Group>
+            <Form.Group className="mt-3">
+              <Form.Label>Harga</Form.Label>
+              <Form.Control
+                type="number"
+                value={harga}
+                onChange={(e) => setHarga(e.target.value)}
+              />
+            </Form.Group>
+            <Form.Group className="mt-3">
+              <Form.Label>Gambar</Form.Label>
+              <Form.Control
+                type="file"
+                onChange={(e) => setFoto(e.target.files[0])}
+              />
+            </Form.Group>
+          </Form>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowAddModal(false)}>Batal</Button>
+          <Button variant="primary" onClick={handleAddMenu}>Simpan</Button>
+        </Modal.Footer>
+      </Modal>
 
       {/* Modal Edit */}
       <Modal show={showEditModal} onHide={() => setShowEditModal(false)}>
