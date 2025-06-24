@@ -207,7 +207,14 @@ const MenuPage = () => {
       </div>
 
       {/* Modal Tambah */}
-      <Modal show={showAddModal} onHide={() => setShowAddModal(false)} centered>
+      <Modal
+  show={showAddModal}
+  onHide={() => setShowAddModal(false)}
+  centered
+  size="md"
+  backdrop="static"
+  keyboard={false}
+>
         <Modal.Header closeButton><Modal.Title>Tambah Menu Baru</Modal.Title></Modal.Header>
         <Modal.Body>
           <Form>
@@ -222,7 +229,14 @@ const MenuPage = () => {
       </Modal>
 
       {/* Modal Edit */}
-      <Modal show={showEditModal} onHide={() => setShowEditModal(false)} centered>
+      <Modal
+  show={showEditModal}
+  onHide={() => setShowEditModal(false)}
+  centered
+  size="md"
+  backdrop="static"
+  keyboard={false}
+>
         <Modal.Header closeButton><Modal.Title>Edit Menu</Modal.Title></Modal.Header>
         <Modal.Body>
           <Form>
