@@ -145,7 +145,6 @@ const Home = () => {
 
       {/* Coffee Cards */}
       <div className="coffee-section">
-        <h2>Populer Menu</h2>
         <div className="coffee-list">
           {getRandomCoffees().length > 0 ? (
             getRandomCoffees().map((coffee, idx) => (
