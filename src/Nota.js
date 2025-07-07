@@ -4,7 +4,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 const Nota = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { items, quantity, total, customerName } = location.state || {};
+  const { items, quantity, total, customerName, nomorMeja } = location.state || {};
 
   const currentDate = new Date();
   const tanggal = currentDate.toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' });
@@ -23,6 +23,7 @@ const Nota = () => {
         </div>
 
         <div className="nota-info"><strong>Nama:</strong> {customerName}</div>
+        <div className="nota-info"><strong>Nomor Meja:</strong> {nomorMeja}</div>
 <div className="nota-info">
   <strong>Menu:</strong>
   <ul>

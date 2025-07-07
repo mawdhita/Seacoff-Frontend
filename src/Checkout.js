@@ -22,6 +22,7 @@ const Checkout = () => {
   }
 
   const [customerName, setCustomerName] = useState('');
+  const [nomorMeja, setNomorMeja] = useState('');
 
   useEffect(() => {
     if (!items || items.length === 0) {
@@ -44,12 +45,17 @@ const Checkout = () => {
       alert("Nama pemesan wajib diisi!");
       return;
     }
+    if (!nomorMeja.trim()) {
+      alert("Nomor meja wajib diisi!");
+      return;
+    }
 
     const data = {
       id_user: 1,
       total_pesanan: total,
       status: "pending",
       nama_user: customerName,
+      nomor_meja: nomorMeja,
       produk: items.map(item => ({
         nama_produk: item.nama_menu,
         jumlah: item.quantity,
@@ -72,6 +78,7 @@ navigate('/nota', {
     })),
     total,
     customerName,
+    nomorMeja,
     breakdown: {
       subtotal,
       ppn,
@@ -114,6 +121,16 @@ navigate('/nota', {
           value={customerName}
           onChange={(e) => setCustomerName(e.target.value)}
           placeholder="Masukkan nama kamu"
+        />
+      </div>
+      <div className="checkout-input">
+        <label htmlFor="nomorMeja">Nomor Meja</label>
+        <input
+          type="text"
+          id="nomorMeja"
+          value={nomorMeja}
+          onChange={(e) => setNomorMeja(e.target.value)}
+          placeholder="Masukkan nomor meja"
         />
       </div>
 

@@ -13,6 +13,7 @@ const Home = () => {
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [coffees, setCoffees] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
+  const [nomorMeja, setNomorMeja] = useState('');
 
   useEffect(() => {
     fetchMenu();
@@ -36,6 +37,21 @@ const Home = () => {
     const matchSearch = coffee.nama_menu.toLowerCase().includes(searchTerm.toLowerCase());
     return matchCategory && matchSearch;
   });
+
+  // Function to get 4 random items from filteredCoffees
+  const getRandomCoffees = () => {
+    const shuffled = [...filteredCoffees].sort(() => 0.5 - Math.random());
+    return shuffled.slice(0, 4);
+  };
+
+  const handleOrderClick = (id_menu) => {
+    if (!nomorMeja) {
+      alert('Silakan isi nomor meja terlebih dahulu.');
+      return;
+    }
+    // Pass nomorMeja as state or query param if needed
+    navigate(`/detail/${id_menu}`, { state: { nomorMeja } });
+  };
 
   return (
     <div className="home-container">
@@ -132,18 +148,36 @@ const Home = () => {
         ))}
       </div>
 
+      {/* Table Number Input */}
+      <div style={{ margin: '10px 0', textAlign: 'center' }}>
+        <input
+          type="text"
+          placeholder="Masukkan nomor meja"
+          value={nomorMeja}
+          onChange={(e) => setNomorMeja(e.target.value)}
+          style={{
+            padding: '8px 12px',
+            borderRadius: '8px',
+            border: '1.5px solid #5d3c14',
+            outline: 'none',
+            width: '200px',
+            fontSize: '1rem',
+          }}
+        />
+      </div>
+
       {/* Coffee Cards */}
       <div className="coffee-section">
-        <h2>Popular Coffee</h2>
+        <h2>Populer Menu</h2>
         <div className="coffee-list">
-          {filteredCoffees.length > 0 ? (
-            filteredCoffees.map((coffee, idx) => (
+          {getRandomCoffees().length > 0 ? (
+            getRandomCoffees().map((coffee, idx) => (
               <div key={idx} className="coffee-card">
                <img src={coffee.foto_menu} alt={coffee.nama_menu} />
 
                 <h3>{coffee.nama_menu}</h3>
                 <p>Rp {coffee.harga}</p>
-                <button className="order-button" onClick={() => navigate(`/detail/${coffee.id_menu}`)}>
+                <button className="order-button" onClick={() => handleOrderClick(coffee.id_menu)}>
                   + Pesan
                 </button>
               </div>
